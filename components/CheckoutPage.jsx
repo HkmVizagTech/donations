@@ -41,7 +41,11 @@ const indianStates = [
   "Puducherry"
 ];
 
-export default function CheckoutPage({ donation }) {
+export default function CheckoutPage({
+  donation,
+  embedded = false,
+  onClose
+}) {
   const [customAmount, setCustomAmount] = useState(
     donation.numericAmount ? String(donation.numericAmount) : ""
   );
@@ -59,7 +63,21 @@ export default function CheckoutPage({ donation }) {
   }, [customAmount, donation.amount, donation.numericAmount]);
 
   return (
-    <main className="checkout-page">
+    <div className={`checkout-page${embedded ? " checkout-page-embedded" : ""}`}>
+      {embedded ? (
+        <section className="container-wide embedded-checkout-header">
+          <div>
+            <p className="checkout-eyebrow">Fast Checkout</p>
+            <h2 className="embedded-checkout-title">Complete your offering without leaving this page</h2>
+          </div>
+          {onClose ? (
+            <button type="button" className="embedded-checkout-close" onClick={onClose}>
+              Close
+            </button>
+          ) : null}
+        </section>
+      ) : null}
+
       <section className="checkout-hero">
         <div className="container-wide checkout-hero-inner">
           <div>
@@ -376,6 +394,6 @@ export default function CheckoutPage({ donation }) {
           </div>
         </aside>
       </section>
-    </main>
+    </div>
   );
 }

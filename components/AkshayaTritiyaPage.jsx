@@ -1,7 +1,12 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import BannerCarouselShell from "@/components/BannerCarouselShell";
+import CheckoutPage from "@/components/CheckoutPage";
 import {
   annadaanCards,
   galleryImages,
+  getDonationBySevaId,
   goSevaCards,
   navLinks,
   sliderImages
@@ -23,7 +28,7 @@ function SevaIcon({ variant }) {
   );
 }
 
-function DonationCard({ title, amount, sevaId, variant }) {
+function DonationCard({ title, amount, sevaId, variant, onDonate }) {
   return (
     <article className={`donation-card-exact donation-card-${variant}`}>
       <div className="donation-card-head">
@@ -34,20 +39,41 @@ function DonationCard({ title, amount, sevaId, variant }) {
         <div className={`donation-amount donation-amount-${variant}`}>
           <strong>{amount}</strong>
         </div>
-        <a
-          href={`/checkout?seva=${sevaId}`}
+        <button
+          type="button"
+          onClick={() => onDonate(sevaId)}
           className={`donate-button ${
             variant === "gau" ? "donate-button-gau" : "donate-button-annadaan"
           }`}
         >
           DONATE NOW
-        </a>
+        </button>
       </div>
     </article>
   );
 }
 
 export default function AkshayaTritiyaPage() {
+  const [selectedDonation, setSelectedDonation] = useState(null);
+  const checkoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!selectedDonation || !checkoutRef.current) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      checkoutRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  }, [selectedDonation]);
+
+  const handleDonate = (sevaId) => {
+    setSelectedDonation(getDonationBySevaId(sevaId));
+  };
+
   return (
     <main className="exact-page">
       <section className="hero-slider">
@@ -99,6 +125,7 @@ export default function AkshayaTritiyaPage() {
                 key={`${card.title}-${card.amount}`}
                 {...card}
                 variant="annadaan"
+                onDonate={handleDonate}
               />
             ))}
           <article className="donation-card-exact donation-card-full donation-card-annadaan">
@@ -107,12 +134,13 @@ export default function AkshayaTritiyaPage() {
             </div>
             <h3>Donate any other Amount</h3>
             <div className="donation-card-row single">
-              <a
-                href="/checkout?seva=10"
+              <button
+                type="button"
+                onClick={() => handleDonate("10")}
                 className="donate-button donate-button-annadaan"
               >
                 DONATE NOW
-              </a>
+              </button>
             </div>
           </article>
         </div>
@@ -131,6 +159,7 @@ export default function AkshayaTritiyaPage() {
                 key={`${card.title}-${card.amount}`}
                 {...card}
                 variant="gau"
+                onDonate={handleDonate}
               />
             ))}
           <article className="donation-card-exact donation-card-full donation-card-gau">
@@ -139,13 +168,27 @@ export default function AkshayaTritiyaPage() {
             </div>
             <h3>Donate any other Amount</h3>
             <div className="donation-card-row single">
-              <a href="/checkout?seva=20" className="donate-button donate-button-gau">
+              <button
+                type="button"
+                onClick={() => handleDonate("20")}
+                className="donate-button donate-button-gau"
+              >
                 DONATE NOW
-              </a>
+              </button>
             </div>
           </article>
         </div>
       </section>
+
+      {selectedDonation ? (
+        <section ref={checkoutRef} className="embedded-checkout-wrap">
+          <CheckoutPage
+            donation={selectedDonation}
+            embedded
+            onClose={() => setSelectedDonation(null)}
+          />
+        </section>
+      ) : null}
 
       <section className="black-strip">
         <div className="container-wide">

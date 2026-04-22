@@ -50,6 +50,13 @@ body {
   font-family: var(--font-sans), sans-serif;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -167,15 +174,22 @@ img {
 .headline-block h2,
 .section-title,
 .bank-box h4,
-.site-footer h3 {
+.site-footer h3,
+.checkout-hero h1,
+.checkout-panel h3,
+.checkout-sidebar-card h3,
+.checkout-summary-card h2,
+.checkout-payment-box h4 {
   margin: 0;
   font-family: var(--font-sans), sans-serif;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .headline-block h1 {
   font-size: clamp(2rem, 4vw, 3rem);
   color: hsl(220 42% 16%);
+  line-height: 1.08;
 }
 
 .headline-block h2 {
@@ -190,6 +204,7 @@ img {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  line-height: 1.08;
 }
 
 .headline-actions {
@@ -340,6 +355,7 @@ img {
 
 .donation-card-exact h3 {
   margin: 0 0 16px;
+  font-family: var(--font-sans), sans-serif;
   font-size: 1.15rem;
   line-height: 1.45;
   text-align: center;
@@ -582,7 +598,8 @@ img {
 .site-footer h3 {
   margin-bottom: 14px;
   font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .site-footer p,
@@ -695,6 +712,7 @@ img {
 
   .carousel-image {
     object-fit: contain;
+    object-position: center;
   }
 
   .donation-grid {
@@ -731,6 +749,12 @@ img {
   .carousel-slide {
     aspect-ratio: 1920 / 860;
     min-height: 140px;
+    background: transparent;
+  }
+
+  .carousel-image {
+    object-fit: cover;
+    object-position: center;
   }
 
   .carousel-controls {
@@ -845,6 +869,15 @@ img {
     text-align: center;
     padding: 12px 0;
   }
+
+  .embedded-checkout-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .embedded-checkout-close {
+    width: 100%;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -874,6 +907,46 @@ img {
   background:
     radial-gradient(circle at top right, hsl(42 100% 63% / 0.16), transparent 18%),
     linear-gradient(180deg, hsl(40 100% 98%), hsl(32 44% 95%));
+}
+
+.embedded-checkout-wrap {
+  margin-top: 12px;
+}
+
+.checkout-page-embedded {
+  min-height: 0;
+  padding: 24px 0 8px;
+}
+
+.embedded-checkout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.embedded-checkout-title {
+  margin: 8px 0 0;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  color: hsl(220 42% 16%);
+}
+
+.embedded-checkout-close {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 999px;
+  background: hsl(0 0% 100% / 0.86);
+  color: hsl(220 42% 18%);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.embedded-checkout-close:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-warm);
 }
 
 .checkout-hero {
@@ -910,6 +983,7 @@ img {
   margin: 16px 0 0;
   color: hsl(220 24% 34%);
   line-height: 1.8;
+  font-size: 1rem;
 }
 
 .checkout-summary-card,
@@ -949,6 +1023,7 @@ img {
 .checkout-summary-card p {
   margin: 12px 0 0;
   color: hsl(0 0% 100% / 0.82);
+  line-height: 1.7;
 }
 
 .checkout-summary-card strong {
@@ -997,16 +1072,26 @@ img {
   background: hsl(0 0% 100% / 0.9);
   color: hsl(220 50% 16%);
   outline: none;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .checkout-field input::placeholder,
+.checkout-field select,
 .checkout-field textarea::placeholder {
   color: hsl(220 26% 30%);
   opacity: 1;
   font-size: 0.97rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+}
+
+.checkout-field textarea {
+  resize: vertical;
 }
 
 .checkout-field input:focus,
@@ -1041,6 +1126,7 @@ img {
 .checkout-check-card strong {
   display: block;
   color: hsl(220 48% 20%);
+  font-size: 1rem;
 }
 
 .checkout-check-card p {
@@ -1150,7 +1236,9 @@ img {
   min-height: 54px;
   border-radius: 999px;
   color: white;
+  font-family: var(--font-sans), sans-serif;
   font-weight: 800;
+  letter-spacing: 0.03em;
   background: var(--gradient-donation);
   box-shadow: 0 14px 34px -14px hsl(18 88% 50% / 0.6);
 }
