@@ -1,0 +1,7 @@
+node_modules
+.next
+.next-dev*.log
+.next-dev*.err.log
+akshaya-source.html
+hkmsite2-source.html
+hkmsite2-theme.css
