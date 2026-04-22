@@ -1,72 +1,44 @@
-import BannerCarousel from "@/components/BannerCarousel";
+import BannerCarouselShell from "@/components/BannerCarouselShell";
+import {
+  annadaanCards,
+  galleryImages,
+  goSevaCards,
+  navLinks,
+  sliderImages
+} from "@/data/donations";
 
-const sliderImages = [
-  {
-    href: "#annadaan",
-    src: "/banners/annadaan-banner.webp",
-    alt: "Annadaan banner"
-  },
-  {
-    href: "#goseva",
-    src: "/banners/goseva-banner.webp",
-    alt: "Go Seva banner"
+function SevaIcon({ variant }) {
+  if (variant === "gau") {
+    return (
+      <div className={`seva-icon seva-icon-${variant}`} aria-hidden="true">
+        <span className="cow-icon">{"\uD83D\uDC04"}</span>
+      </div>
+    );
   }
-];
 
-const annadaanCards = [
-  { title: "Feed 50 people", amount: "Rs. 1501", href: "checkout.php?seva_id=11" },
-  { title: "Feed 100 people", amount: "Rs. 3001", href: "checkout.php?seva_id=1" },
-  { title: "Feed 200 people", amount: "Rs. 6001", href: "checkout.php?seva_id=2" },
-  { title: "Feed 300 people", amount: "Rs. 9001", href: "checkout.php?seva_id=3" },
-  { title: "Feed 500 people", amount: "Rs. 15001", href: "checkout.php?seva_id=4" },
-  { title: "Feed 1000 people", amount: "Rs. 30,001", href: "checkout.php?seva_id=5" },
-  { title: "Feed 2000 people", amount: "Rs. 60,001", href: "checkout.php?seva_id=6" },
-  { title: "Feed 3000 people", amount: "Rs. 90,001", href: "checkout.php?seva_id=7" },
-  { title: "Feed 5000 people", amount: "Rs. 1,50,000", href: "checkout.php?seva_id=8" },
-  { title: "Feed 10,000 people", amount: "Rs. 3,00,000", href: "checkout.php?seva_id=9" }
-];
-
-const goSevaCards = [
-  { title: "Feed 10 Cows For A Day", amount: "Rs. 1500", href: "checkout.php?seva_id=21" },
-  { title: "Medicines For Cow", amount: "Rs. 2500", href: "checkout.php?seva_id=12" },
-  { title: "Feed A Cow For A Month", amount: "Rs. 3500", href: "checkout.php?seva_id=13" },
-  { title: "Feed 5 Cows For A Week", amount: "Rs. 5000", href: "checkout.php?seva_id=14" },
-  { title: "Green Grass For All Cows For A Day", amount: "Rs. 9000", href: "checkout.php?seva_id=15" },
-  { title: "Fooder For All Cows For A Day", amount: "Rs. 15,000", href: "checkout.php?seva_id=16" },
-  { title: "Adopt A Cow For An Year", amount: "Rs. 40,000", href: "checkout.php?seva_id=17" },
-  { title: "Adopt 3 Cows For An Year", amount: "Rs. 1,20,000", href: "checkout.php?seva_id=18" },
-  { title: "Adopt 5 Cows For An Year", amount: "Rs. 2,00,000", href: "checkout.php?seva_id=19" }
-];
-
-const galleryImages = [
-  "https://www.harekrishnavizag.org/images/a75.webp",
-  "https://www.harekrishnavizag.org/images/a2.webp",
-  "https://www.harekrishnavizag.org/images/a3.webp",
-  "https://www.harekrishnavizag.org/images/a4.webp"
-];
-
-const navLinks = [
-  { label: "HARE KRISHNA MOVEMENT", href: "https://www.harekrishnavizag.org/aboutus" },
-  { label: "CONTACT US", href: "https://www.harekrishnavizag.org/contactus" },
-  { label: "SUBHOJANAM", href: "https://www.harekrishnavizag.org/subhojanam" },
-  { label: "TERMS & CONDITIONS", href: "https://www.harekrishnavizag.org/terms_and_conditions" },
-  { label: "REFUND POLICY", href: "https://www.harekrishnavizag.org/cancellation_and_refund_policy" },
-  { label: "PRIVACY POLICY", href: "https://www.harekrishnavizag.org/privacy_policy" }
-];
-
-function DonationCard({ title, amount, href }) {
   return (
-    <article className="donation-card-exact">
+    <div className={`seva-icon seva-icon-${variant}`} aria-hidden="true">
+      <span className="plate-icon">{"\uD83C\uDF5A"}</span>
+    </div>
+  );
+}
+
+function DonationCard({ title, amount, sevaId, variant }) {
+  return (
+    <article className={`donation-card-exact donation-card-${variant}`}>
+      <div className="donation-card-head">
+        <SevaIcon variant={variant} />
+      </div>
       <h3>{title}</h3>
       <div className="donation-card-row">
-        <div className="donation-amount">
+        <div className={`donation-amount donation-amount-${variant}`}>
           <strong>{amount}</strong>
         </div>
         <a
-          href={`https://www.harekrishnavizag.org/${href}`}
-          className="donate-button"
-          target="_blank"
-          rel="noreferrer"
+          href={`/checkout?seva=${sevaId}`}
+          className={`donate-button ${
+            variant === "gau" ? "donate-button-gau" : "donate-button-annadaan"
+          }`}
         >
           DONATE NOW
         </a>
@@ -80,7 +52,7 @@ export default function AkshayaTritiyaPage() {
     <main className="exact-page">
       <section className="hero-slider">
         <div className="container-hero">
-          <BannerCarousel slides={sliderImages} />
+          <BannerCarouselShell slides={sliderImages} />
         </div>
       </section>
 
@@ -120,17 +92,24 @@ export default function AkshayaTritiyaPage() {
         </div>
 
         <div className="donation-grid">
-          {annadaanCards.map((card) => (
-            <DonationCard key={`${card.title}-${card.amount}`} {...card} />
-          ))}
-          <article className="donation-card-exact donation-card-full">
+          {annadaanCards
+            .filter((card) => card.sevaId !== "10")
+            .map((card) => (
+              <DonationCard
+                key={`${card.title}-${card.amount}`}
+                {...card}
+                variant="annadaan"
+              />
+            ))}
+          <article className="donation-card-exact donation-card-full donation-card-annadaan">
+            <div className="donation-card-head">
+              <SevaIcon variant="annadaan" />
+            </div>
             <h3>Donate any other Amount</h3>
             <div className="donation-card-row single">
               <a
-                href="https://www.harekrishnavizag.org/checkout.php?seva_id=10"
-                className="donate-button"
-                target="_blank"
-                rel="noreferrer"
+                href="/checkout?seva=10"
+                className="donate-button donate-button-annadaan"
               >
                 DONATE NOW
               </a>
@@ -145,18 +124,22 @@ export default function AkshayaTritiyaPage() {
         </div>
 
         <div className="donation-grid">
-          {goSevaCards.map((card) => (
-            <DonationCard key={`${card.title}-${card.amount}`} {...card} />
-          ))}
-          <article className="donation-card-exact donation-card-full">
+          {goSevaCards
+            .filter((card) => card.sevaId !== "20")
+            .map((card) => (
+              <DonationCard
+                key={`${card.title}-${card.amount}`}
+                {...card}
+                variant="gau"
+              />
+            ))}
+          <article className="donation-card-exact donation-card-full donation-card-gau">
+            <div className="donation-card-head">
+              <SevaIcon variant="gau" />
+            </div>
             <h3>Donate any other Amount</h3>
             <div className="donation-card-row single">
-              <a
-                href="https://www.harekrishnavizag.org/checkout.php?seva_id=20"
-                className="donate-button"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href="/checkout?seva=20" className="donate-button donate-button-gau">
                 DONATE NOW
               </a>
             </div>
@@ -217,7 +200,11 @@ export default function AkshayaTritiyaPage() {
               <a href="https://www.youtube.com/user/harekrishnavizag" target="_blank" rel="noreferrer">
                 YouTube
               </a>
-              <a href="https://www.instagram.com/hare_krishna_vizag/" target="_blank" rel="noreferrer">
+              <a
+                href="https://www.instagram.com/hare_krishna_vizag/"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Instagram
               </a>
             </div>

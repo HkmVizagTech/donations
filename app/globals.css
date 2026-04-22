@@ -16,6 +16,15 @@
   --gradient-gold: linear-gradient(135deg, hsl(190 85% 55%), hsl(195 80% 45%));
   --gradient-navy: linear-gradient(135deg, hsl(220 90% 18%), hsl(220 70% 28%));
   --gradient-ocean: linear-gradient(135deg, hsl(220 90% 20%), hsl(190 85% 55%));
+  --gradient-sunrise: linear-gradient(135deg, hsl(42 100% 63%), hsl(22 90% 56%));
+  --gradient-aurora: linear-gradient(135deg, hsl(38 96% 62%), hsl(340 72% 56%));
+  --gradient-lagoon: linear-gradient(135deg, hsl(220 90% 20%), hsl(190 85% 55%), hsl(165 70% 52%));
+  --gradient-blossom: linear-gradient(135deg, hsl(350 70% 48%), hsl(18 90% 58%));
+  --gradient-citrus: linear-gradient(135deg, hsl(48 100% 64%), hsl(28 100% 58%));
+  --gradient-violet: linear-gradient(135deg, hsl(258 72% 62%), hsl(220 85% 58%));
+  --gradient-donation: linear-gradient(135deg, hsl(8 78% 39%), hsl(22 88% 50%), hsl(42 100% 58%));
+  --gradient-seva: linear-gradient(135deg, hsl(18 84% 46%), hsl(38 96% 58%));
+  --surface-warm: linear-gradient(180deg, hsl(40 100% 98%), hsl(34 72% 94%));
   --shadow-warm: 0 10px 40px -10px hsl(220 90% 20% / 0.2);
   --shadow-elevated: 0 20px 60px -15px hsl(220 60% 10% / 0.15);
   --shadow-glow: 0 0 30px hsl(190 85% 55% / 0.25);
@@ -33,9 +42,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top right, hsl(190 85% 55% / 0.14), transparent 22%),
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.16), transparent 22%),
     radial-gradient(circle at 12% 24%, hsl(220 90% 20% / 0.08), transparent 24%),
-    linear-gradient(180deg, hsl(var(--background)), hsl(210 25% 94%));
+    radial-gradient(circle at 82% 58%, hsl(18 88% 56% / 0.12), transparent 20%),
+    linear-gradient(180deg, hsl(40 100% 98%), hsl(32 44% 95%));
   color: hsl(var(--foreground));
   font-family: var(--font-sans), sans-serif;
 }
@@ -76,9 +86,10 @@ img {
   border: 0;
   box-shadow: var(--shadow-elevated);
   background:
-    radial-gradient(circle at top right, hsl(190 85% 55% / 0.32), transparent 28%),
-    radial-gradient(circle at 10% 85%, hsl(195 80% 45% / 0.22), transparent 22%),
-    var(--gradient-navy);
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.34), transparent 28%),
+    radial-gradient(circle at 10% 85%, hsl(18 90% 56% / 0.22), transparent 22%),
+    radial-gradient(circle at 55% 20%, hsl(350 70% 48% / 0.14), transparent 18%),
+    linear-gradient(135deg, hsl(220 70% 16%), hsl(220 55% 22%), hsl(8 78% 28%));
 }
 
 .carousel-track {
@@ -90,11 +101,15 @@ img {
   position: relative;
   flex: 0 0 100%;
   display: block;
-  aspect-ratio: 16 / 6.4;
-  min-height: 220px;
+  aspect-ratio: 1920 / 730;
+  min-height: 210px;
   background:
     radial-gradient(circle at top right, hsl(190 85% 55% / 0.18), transparent 24%),
     var(--gradient-navy);
+}
+
+.carousel-fallback .carousel-slide {
+  flex: none;
 }
 
 .carousel-slide::after {
@@ -113,24 +128,11 @@ img {
 
 .carousel-controls {
   position: absolute;
-  inset: auto 16px 16px;
+  inset: auto 0 16px;
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.carousel-nav {
-  width: 44px;
-  height: 44px;
-  border: 1px solid hsl(0 0% 100% / 0.18);
-  border-radius: 999px;
-  background: hsl(220 50% 10% / 0.55);
-  color: white;
-  font-size: 1.6rem;
-  line-height: 1;
-  backdrop-filter: blur(8px);
+  justify-content: center;
 }
 
 .carousel-dots {
@@ -153,7 +155,7 @@ img {
 
 .carousel-dot.active {
   width: 28px;
-  background: hsl(190 85% 65%);
+  background: var(--gradient-sunrise);
 }
 
 .headline-wrap {
@@ -173,13 +175,18 @@ img {
 
 .headline-block h1 {
   font-size: clamp(2rem, 4vw, 3rem);
-  color: hsl(var(--foreground));
+  color: hsl(220 42% 16%);
 }
 
 .headline-block h2 {
   margin-top: 8px;
   font-size: clamp(2rem, 4vw, 3rem);
-  background: linear-gradient(135deg, hsl(220 90% 20%), hsl(190 85% 55%), hsl(195 80% 45%));
+  background: linear-gradient(
+    135deg,
+    hsl(8 78% 39%),
+    hsl(22 88% 50%),
+    hsl(42 100% 58%)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -213,14 +220,14 @@ img {
 .cta-yellow,
 .donate-button {
   color: white;
-  background: var(--gradient-navy);
-  box-shadow: var(--shadow-warm);
+  background: var(--gradient-donation);
+  box-shadow: 0 14px 34px -14px hsl(18 88% 50% / 0.6);
 }
 
 .cta-green {
   color: white;
-  background: var(--gradient-gold);
-  box-shadow: var(--shadow-glow);
+  background: linear-gradient(135deg, hsl(220 70% 22%), hsl(220 60% 32%));
+  box-shadow: 0 14px 34px -14px hsl(220 60% 22% / 0.45);
 }
 
 .cta-yellow:hover,
@@ -233,8 +240,9 @@ img {
   margin-top: 20px;
   padding: 26px 0;
   background:
-    radial-gradient(circle at 15% 50%, hsl(190 85% 55% / 0.22), transparent 24%),
-    linear-gradient(135deg, hsl(220 90% 18%), hsl(220 70% 28%));
+    radial-gradient(circle at 15% 50%, hsl(42 100% 63% / 0.24), transparent 24%),
+    radial-gradient(circle at 82% 30%, hsl(18 90% 56% / 0.18), transparent 16%),
+    linear-gradient(135deg, hsl(220 75% 18%), hsl(220 58% 25%), hsl(8 68% 30%));
 }
 
 .blue-banner-inner {
@@ -272,6 +280,20 @@ img {
   color: hsl(var(--primary));
 }
 
+.annadaan-title {
+  background: linear-gradient(135deg, hsl(8 78% 39%), hsl(22 88% 50%), hsl(42 100% 58%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.goseva-title {
+  background: linear-gradient(135deg, hsl(220 72% 22%), hsl(220 58% 38%), hsl(42 90% 64%));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 .donation-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -286,9 +308,34 @@ img {
   border: 1px solid hsl(var(--border));
   border-radius: 1rem;
   background:
-    radial-gradient(circle at top right, hsl(190 85% 55% / 0.12), transparent 28%),
-    linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(0 0% 100% / 0.98));
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.14), transparent 28%),
+    radial-gradient(circle at 0% 100%, hsl(18 90% 56% / 0.09), transparent 22%),
+    linear-gradient(180deg, hsl(40 100% 98%), hsl(34 72% 95%));
   box-shadow: var(--shadow-warm);
+}
+
+.donation-card-annadaan {
+  border-color: hsl(32 70% 74%);
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.16), transparent 28%),
+    radial-gradient(circle at 0% 100%, hsl(18 90% 56% / 0.1), transparent 22%),
+    linear-gradient(180deg, hsl(40 100% 98%), hsl(34 72% 95%));
+  box-shadow: 0 14px 32px -18px hsl(22 88% 50% / 0.28);
+}
+
+.donation-card-gau {
+  border-color: hsl(150 28% 74%);
+  background:
+    radial-gradient(circle at top right, hsl(145 60% 52% / 0.14), transparent 28%),
+    radial-gradient(circle at 0% 100%, hsl(48 90% 68% / 0.08), transparent 22%),
+    linear-gradient(180deg, hsl(118 42% 98%), hsl(132 24% 95%));
+  box-shadow: 0 14px 32px -18px hsl(150 55% 32% / 0.22);
+}
+
+.donation-card-head {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .donation-card-exact h3 {
@@ -296,7 +343,50 @@ img {
   font-size: 1.15rem;
   line-height: 1.45;
   text-align: center;
-  color: hsl(var(--primary));
+  color: hsl(8 66% 34%);
+}
+
+.donation-grid:first-of-type .donation-card-exact h3 {
+  color: hsl(8 66% 34%);
+}
+
+.donation-grid:last-of-type .donation-card-exact h3 {
+  color: hsl(220 58% 28%);
+}
+
+.seva-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  font-size: 1.7rem;
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.26);
+}
+
+.seva-icon-annadaan {
+  background: linear-gradient(135deg, hsl(42 100% 88%), hsl(22 90% 82%));
+  animation: seva-float 3.4s ease-in-out infinite;
+}
+
+.seva-icon-gau {
+  background: linear-gradient(135deg, hsl(132 42% 88%), hsl(48 70% 85%));
+  animation: seva-float 3.8s ease-in-out infinite;
+}
+
+.plate-icon,
+.cow-icon {
+  display: inline-block;
+  transform-origin: center;
+}
+
+.plate-icon {
+  animation: icon-glow 2.8s ease-in-out infinite;
+}
+
+.cow-icon {
+  animation: icon-glow 3.1s ease-in-out infinite;
 }
 
 .donation-card-row {
@@ -317,13 +407,28 @@ img {
   min-height: 54px;
   padding: 0 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, hsl(210 20% 91%), hsl(190 40% 92%));
-  border: 1px solid hsl(190 35% 82%);
+  background: linear-gradient(
+    135deg,
+    hsl(44 100% 95%),
+    hsl(36 82% 92%),
+    hsl(18 72% 93%)
+  );
+  border: 1px solid hsl(36 58% 80%);
+}
+
+.donation-amount-annadaan {
+  background: linear-gradient(135deg, hsl(44 100% 95%), hsl(36 82% 92%), hsl(18 72% 93%));
+  border-color: hsl(36 58% 80%);
+}
+
+.donation-amount-gau {
+  background: linear-gradient(135deg, hsl(108 46% 95%), hsl(132 28% 92%), hsl(48 72% 92%));
+  border-color: hsl(132 24% 78%);
 }
 
 .donation-amount strong {
   font-size: 1.35rem;
-  color: hsl(var(--foreground));
+  color: hsl(8 62% 30%);
   text-align: center;
   word-break: break-word;
 }
@@ -331,6 +436,57 @@ img {
 .donate-button {
   white-space: nowrap;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.donate-button::after {
+  content: "";
+  position: absolute;
+  top: -120%;
+  left: -30%;
+  width: 34%;
+  height: 320%;
+  transform: rotate(22deg);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsl(0 0% 100% / 0.08) 20%,
+    hsl(0 0% 100% / 0.42) 50%,
+    hsl(0 0% 100% / 0.08) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.donate-button-annadaan {
+  background: hsl(12 78% 44%);
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.18),
+    0 14px 34px -14px hsl(12 78% 44% / 0.5);
+}
+
+.donate-button-annadaan::after {
+  animation: button-shine 3.6s ease-in-out infinite;
+}
+
+.donate-button-gau {
+  background: linear-gradient(135deg, hsl(146 58% 32%), hsl(164 62% 38%));
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.18),
+    0 14px 34px -14px hsl(150 55% 32% / 0.45);
+}
+
+.donate-button-gau::after {
+  animation: button-shine 4s ease-in-out infinite;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsl(48 100% 92% / 0.08) 20%,
+    hsl(48 100% 92% / 0.4) 50%,
+    hsl(48 100% 92% / 0.08) 80%,
+    transparent 100%
+  );
 }
 
 .donation-card-full {
@@ -340,7 +496,10 @@ img {
 .black-strip {
   margin-top: 34px;
   padding: 22px 0;
-  background: linear-gradient(135deg, hsl(220 60% 10%), hsl(220 50% 14%));
+  background:
+    radial-gradient(circle at 85% 50%, hsl(42 100% 63% / 0.18), transparent 18%),
+    radial-gradient(circle at 20% 20%, hsl(18 90% 56% / 0.14), transparent 16%),
+    linear-gradient(135deg, hsl(220 60% 10%), hsl(220 50% 14%), hsl(8 62% 24%));
   color: white;
 }
 
@@ -352,7 +511,7 @@ img {
 }
 
 .black-strip a {
-  color: hsl(190 85% 65%);
+  color: hsl(42 100% 68%);
   font-weight: 600;
 }
 
@@ -365,8 +524,9 @@ img {
   border: 1px solid hsl(var(--border));
   border-radius: 1.25rem;
   background:
-    radial-gradient(circle at top right, hsl(190 85% 55% / 0.12), transparent 30%),
-    linear-gradient(180deg, white, hsl(var(--card)));
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.12), transparent 30%),
+    radial-gradient(circle at bottom left, hsl(18 90% 56% / 0.08), transparent 22%),
+    linear-gradient(180deg, white, hsl(36 58% 96%));
   box-shadow: var(--shadow-warm);
   text-align: center;
 }
@@ -374,14 +534,14 @@ img {
 .bank-box h4 {
   margin-bottom: 10px;
   font-size: 1.4rem;
-  color: hsl(var(--primary));
+  color: hsl(8 66% 34%);
 }
 
 .bank-box p {
   margin: 0;
   line-height: 1.85;
   font-size: 1rem;
-  color: hsl(var(--muted-foreground));
+  color: hsl(220 24% 34%);
 }
 
 .gallery-section {
@@ -406,8 +566,9 @@ img {
 .site-footer {
   margin-top: 12px;
   background:
-    radial-gradient(circle at top right, hsl(190 85% 55% / 0.16), transparent 24%),
-    linear-gradient(135deg, hsl(220 50% 10%), hsl(220 40% 18%));
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.16), transparent 24%),
+    radial-gradient(circle at 15% 30%, hsl(18 90% 56% / 0.12), transparent 18%),
+    linear-gradient(135deg, hsl(220 50% 10%), hsl(220 40% 18%), hsl(8 52% 24%));
   color: white;
 }
 
@@ -467,6 +628,51 @@ img {
   color: hsl(210 20% 80%);
 }
 
+@keyframes button-shine {
+  0% {
+    left: -36%;
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  42% {
+    left: 108%;
+    opacity: 0;
+  }
+
+  100% {
+    left: 108%;
+    opacity: 0;
+  }
+}
+
+@keyframes seva-float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes icon-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: saturate(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+    filter: saturate(1.15);
+  }
+}
+
 @media (max-width: 1100px) {
   .container-narrow,
   .container-wide {
@@ -523,18 +729,12 @@ img {
   }
 
   .carousel-slide {
-    aspect-ratio: 16 / 7.5;
+    aspect-ratio: 1920 / 860;
     min-height: 140px;
   }
 
   .carousel-controls {
-    inset: auto 10px 10px;
-  }
-
-  .carousel-nav {
-    width: 38px;
-    height: 38px;
-    font-size: 1.35rem;
+    inset: auto 0 10px;
   }
 
   .carousel-dots {
@@ -649,7 +849,7 @@ img {
 
 @media (min-width: 1200px) {
   .carousel-slide {
-    aspect-ratio: 16 / 6.8;
+    aspect-ratio: 1920 / 730;
     min-height: 260px;
   }
 }
@@ -666,5 +866,400 @@ img {
 
   .donation-amount strong {
     font-size: 1.2rem;
+  }
+}
+
+.checkout-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.16), transparent 18%),
+    linear-gradient(180deg, hsl(40 100% 98%), hsl(32 44% 95%));
+}
+
+.checkout-hero {
+  padding: 32px 0 20px;
+}
+
+.checkout-hero-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.checkout-eyebrow {
+  margin: 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: hsl(18 84% 42%);
+}
+
+.checkout-hero h1,
+.checkout-panel h3,
+.checkout-sidebar-card h3,
+.checkout-summary-card h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.checkout-hero-text {
+  max-width: 60ch;
+  margin: 16px 0 0;
+  color: hsl(220 24% 34%);
+  line-height: 1.8;
+}
+
+.checkout-summary-card,
+.checkout-panel,
+.checkout-sidebar-card {
+  border: 1px solid hsl(var(--border));
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-warm);
+}
+
+.checkout-summary-card {
+  padding: 26px;
+  color: white;
+}
+
+.checkout-summary-annadaan {
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.28), transparent 28%),
+    var(--gradient-donation);
+}
+
+.checkout-summary-gau {
+  background:
+    radial-gradient(circle at top right, hsl(48 90% 72% / 0.22), transparent 28%),
+    linear-gradient(135deg, hsl(146 58% 32%), hsl(164 62% 38%));
+}
+
+.checkout-summary-tag {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: hsl(0 0% 100% / 0.14);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.checkout-summary-card p {
+  margin: 12px 0 0;
+  color: hsl(0 0% 100% / 0.82);
+}
+
+.checkout-summary-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 24px;
+  padding-bottom: 44px;
+}
+
+.checkout-panel,
+.checkout-sidebar-card {
+  padding: 26px;
+  background: linear-gradient(180deg, hsl(40 100% 98%), hsl(34 72% 95%));
+}
+
+.checkout-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.checkout-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.checkout-field {
+  display: grid;
+  gap: 8px;
+}
+
+.checkout-field input,
+.checkout-field select,
+.checkout-field textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 0.9rem;
+  background: hsl(0 0% 100% / 0.9);
+  color: hsl(220 50% 16%);
+  outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.checkout-field input::placeholder,
+.checkout-field textarea::placeholder {
+  color: hsl(220 26% 30%);
+  opacity: 1;
+  font-size: 0.97rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.checkout-field input:focus,
+.checkout-field select:focus,
+.checkout-field textarea:focus {
+  border-color: hsl(18 84% 50%);
+  box-shadow: 0 0 0 4px hsl(18 84% 50% / 0.08);
+}
+
+.checkout-check-options {
+  display: grid;
+  gap: 12px;
+}
+
+.checkout-check-card,
+.checkout-radio-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 1rem;
+  background: hsl(0 0% 100% / 0.76);
+}
+
+.checkout-check-card input,
+.checkout-radio-card input {
+  margin-top: 3px;
+}
+
+.checkout-check-card strong {
+  display: block;
+  color: hsl(220 48% 20%);
+}
+
+.checkout-check-card p {
+  margin: 6px 0 0;
+  color: hsl(220 18% 42%);
+  line-height: 1.6;
+}
+
+.checkout-conditional-block {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.08), transparent 26%),
+    hsl(0 0% 100% / 0.72);
+}
+
+.checkout-note {
+  margin: -2px 0 0;
+  color: hsl(220 18% 42%);
+  line-height: 1.7;
+  font-size: 0.94rem;
+}
+
+.checkout-inline-choice {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.checkout-payment-rule {
+  padding: 16px 18px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.12), transparent 24%),
+    hsl(0 0% 100% / 0.82);
+}
+
+.checkout-payment-rule strong {
+  display: block;
+  color: hsl(8 66% 34%);
+}
+
+.checkout-payment-rule p {
+  margin: 8px 0 0;
+  color: hsl(220 18% 42%);
+  line-height: 1.7;
+}
+
+.checkout-radio-card {
+  align-items: center;
+}
+
+.checkout-radio-card span {
+  font-weight: 600;
+  color: hsl(220 28% 24%);
+}
+
+.single-compact {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 260px;
+}
+
+.checkout-payment-box {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.14), transparent 28%),
+    hsl(0 0% 100% / 0.88);
+}
+
+.checkout-payment-box h4 {
+  margin: 8px 0 0;
+  font-size: 1.2rem;
+  color: hsl(8 66% 34%);
+}
+
+.checkout-payment-box p:last-child {
+  margin: 8px 0 0;
+  color: hsl(220 18% 42%);
+  line-height: 1.7;
+}
+
+.checkout-payment-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 800;
+  background: var(--gradient-donation);
+}
+
+.checkout-submit {
+  min-height: 54px;
+  border-radius: 999px;
+  color: white;
+  font-weight: 800;
+  background: var(--gradient-donation);
+  box-shadow: 0 14px 34px -14px hsl(18 88% 50% / 0.6);
+}
+
+.checkout-success {
+  padding: 18px 18px 16px;
+  border-radius: 1rem;
+  border: 1px solid hsl(32 62% 76%);
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.14), transparent 24%),
+    hsl(48 100% 97%);
+}
+
+.checkout-success h4 {
+  margin: 0;
+  color: hsl(18 84% 42%);
+}
+
+.checkout-success p {
+  margin: 10px 0 0;
+  color: hsl(220 24% 34%);
+  line-height: 1.7;
+}
+
+.checkout-sidebar {
+  display: grid;
+  gap: 18px;
+  align-self: start;
+}
+
+.checkout-sidebar-annadaan {
+  background:
+    radial-gradient(circle at top right, hsl(42 100% 63% / 0.12), transparent 26%),
+    linear-gradient(180deg, hsl(40 100% 98%), hsl(34 72% 95%));
+}
+
+.checkout-sidebar-gau {
+  background:
+    radial-gradient(circle at top right, hsl(145 60% 52% / 0.12), transparent 26%),
+    linear-gradient(180deg, hsl(118 42% 98%), hsl(132 24% 95%));
+}
+
+.checkout-sidebar-card ul {
+  display: grid;
+  gap: 14px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkout-sidebar-card li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid hsl(34 24% 86%);
+}
+
+.checkout-sidebar-card li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.checkout-sidebar-card li span {
+  color: hsl(220 18% 42%);
+}
+
+.checkout-sidebar-card li strong {
+  text-align: right;
+  color: hsl(220 54% 18%);
+}
+
+@media (max-width: 900px) {
+  .checkout-hero-inner,
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .checkout-hero {
+    padding-top: 18px;
+  }
+
+  .checkout-summary-card,
+  .checkout-panel,
+  .checkout-sidebar-card {
+    padding: 20px;
+  }
+
+  .checkout-field-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .checkout-inline-choice {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-payment-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .checkout-sidebar-card li {
+    flex-direction: column;
+  }
+
+  .checkout-sidebar-card li strong {
+    text-align: left;
   }
 }

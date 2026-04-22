@@ -20,14 +20,14 @@ export default function BannerCarousel({ slides }) {
         className="carousel-track"
         style={{ transform: `translateX(-${activeIndex * 100}%)` }}
       >
-        {slides.map((slide) => (
+        {slides.map((slide, index) => (
           <a key={slide.src} href={slide.href} className="carousel-slide">
             <Image
               src={slide.src}
               alt={slide.alt}
               fill
-              sizes="(max-width: 900px) 100vw, 50vw"
-              priority
+              sizes="100vw"
+              priority={index === 0}
               className="carousel-image"
             />
           </a>
@@ -35,19 +35,6 @@ export default function BannerCarousel({ slides }) {
       </div>
 
       <div className="carousel-controls">
-        <button
-          type="button"
-          className="carousel-nav"
-          aria-label="Previous slide"
-          onClick={() =>
-            setActiveIndex((current) =>
-              current === 0 ? slides.length - 1 : current - 1
-            )
-          }
-        >
-          ‹
-        </button>
-
         <div className="carousel-dots">
           {slides.map((slide, index) => (
             <button
@@ -59,17 +46,6 @@ export default function BannerCarousel({ slides }) {
             />
           ))}
         </div>
-
-        <button
-          type="button"
-          className="carousel-nav"
-          aria-label="Next slide"
-          onClick={() =>
-            setActiveIndex((current) => (current + 1) % slides.length)
-          }
-        >
-          ›
-        </button>
       </div>
     </div>
   );
