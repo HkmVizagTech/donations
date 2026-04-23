@@ -8,7 +8,6 @@ import {
   galleryImages,
   getDonationBySevaId,
   goSevaCards,
-  navLinks,
   sliderImages
 } from "@/data/donations";
 
@@ -100,8 +99,8 @@ export default function AkshayaTritiyaPage() {
       <section className="blue-banner">
         <div className="container-narrow blue-banner-inner">
           <img
-            src="https://www.harekrishnavizag.org/images/banner1122-1.webp"
-            alt="Festival banner"
+            src="/festival/trustee-banner.png"
+            alt="Festival trustee banner"
           />
         </div>
       </section>
@@ -196,8 +195,8 @@ export default function AkshayaTritiyaPage() {
             Gentle Request! While doing Paytm/UPI App Payments or Bank (NEFT/
             RTGS) please send us screen shot along with Complete address and PAN
             Details on our Whatsapp Number{" "}
-            <a href="tel:+919063020108">+91 9063 020 108</a> or to our mail ID{" "}
-            <a href="mailto:social@hkmvizag.org">social@hkmvizag.org</a>. You
+            <a href="tel:+918977761187">+91 89777 61187</a> or to our mail ID{" "}
+            <a href="mailto:mukunda@hkmvizag.org">mukunda@hkmvizag.org</a>. You
             may also call on this number for other queries.
           </p>
         </div>
@@ -220,8 +219,14 @@ export default function AkshayaTritiyaPage() {
 
       <section className="gallery-section container-wide">
         <div className="gallery-grid">
-          {galleryImages.map((src) => (
-            <img key={src} src={src} alt="Service activity" />
+          {galleryImages.map((image) => (
+            <img
+              key={image.src}
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              decoding="async"
+            />
           ))}
         </div>
       </section>
@@ -244,7 +249,7 @@ export default function AkshayaTritiyaPage() {
                 YouTube
               </a>
               <a
-                href="https://www.instagram.com/hare_krishna_vizag/"
+                href="https://www.instagram.com/harekrishnavizag/"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -254,53 +259,34 @@ export default function AkshayaTritiyaPage() {
           </div>
 
           <div>
-            <h3>NAVIGATION</h3>
-            <ul className="footer-links">
-              {navLinks.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} target="_blank" rel="noreferrer">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
             <h3>ADDRESS</h3>
             <p>
-              <strong>Sri Nitai Gauranga Mandir</strong>
+              <strong>Sri Radha Madan Mohan Mandir</strong>
               <br />
               Hare Krishna Movement
               <br />
-              1-57/45, Plot No 45,
+              IIM Rd, opp. Akshaya Patra Foundation,
               <br />
-              Chaya Kutir Apartment, Sandipini Nagar,
+              Gambhiram, 
               <br />
-              Endada, Visakhapatnam,
+               Visakhapatnam,
               <br />
-              Andhra Pradesh 530045
+              Andhra Pradesh 531163
             </p>
           </div>
 
           <div>
-            <img
-              src="https://www.harekrishnavizag.org/images/hkv_logo.webp"
-              width="140"
-              height="88"
-              alt="Hare Krishna Vizag logo"
-            />
             <h3>CONTACT INFO</h3>
             <ul className="footer-links">
               <li>
-                <a href="tel:+919063020108">9063 020 108</a>
+                <a href="tel:+918977761187">89777 61187</a>
               </li>
               <li>
-                <a href="mailto:social@hkmvizag.org">social@hkmvizag.org</a>
+                <a href="mailto:mukunda@hkmvizag.org">mukunda@hkmvizag.org</a>
               </li>
               <li>
-                <a href="https://wa.me/919063020108" target="_blank" rel="noreferrer">
-                  WhatsApp 9063 020 108
+                <a href="https://wa.me/918977761187" target="_blank" rel="noreferrer">
+                  WhatsApp 89777 61187
                 </a>
               </li>
             </ul>
@@ -309,8 +295,7 @@ export default function AkshayaTritiyaPage() {
 
         <div className="copyright-row">
           <div className="container-wide copyright-inner">
-            <p>{"Copyright \u00A9 2023 Hare Krishna Vizag."}</p>
-            <p>Design by WebMahans</p>
+            <p>{"Copyright \u00A9 2026 Hare Krishna Movement India."}</p>
           </div>
         </div>
       </footer>

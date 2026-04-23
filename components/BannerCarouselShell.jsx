@@ -13,13 +13,19 @@ export default function BannerCarouselShell({ slides }) {
   if (!mounted) {
     return (
       <div className="carousel-shell carousel-fallback">
-        <div className="carousel-slide">
-          <img
-            src="/banners/5-billion-meals.webp"
-            alt="5 Billion Meals banner"
-            className="carousel-image"
-          />
-        </div>
+        <a href={slides[0]?.href ?? "#annadaan"} className="carousel-slide">
+          <picture>
+            <source
+              media="(max-width: 640px)"
+              srcSet={slides[0]?.mobileSrc ?? slides[0]?.src}
+            />
+            <img
+              src={slides[0]?.src ?? "/banners/5-billion-meals-desktop.webp"}
+              alt={slides[0]?.alt ?? "Festival banner"}
+              className="carousel-image"
+            />
+          </picture>
+        </a>
       </div>
     );
   }

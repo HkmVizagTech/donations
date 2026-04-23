@@ -1,12 +1,26 @@
 export const sliderImages = [
   {
     href: "#annadaan",
-    src: "/banners/5-billion-meals.webp",
+    src: "/banners/narasimha-jayanthi-desktop.jpeg",
+    mobileSrc: "/banners/narasimha-jayanthi-mobile.jpeg",
+    alt: "Narasimha Jayanthi banner"
+  },
+  {
+    href: "#goseva",
+    src: "/banners/gau-seva-desktop.png",
+    mobileSrc: "/banners/gau-seva-mobile.png",
+    alt: "Gau Seva banner"
+  },
+  {
+    href: "#annadaan",
+    src: "/banners/5-billion-meals-desktop.webp",
+    mobileSrc: "/banners/5-billion-meals-mobile.jpeg",
     alt: "5 Billion Meals banner"
   },
   {
     href: "#goseva",
-    src: "/banners/ekadashi-banner.webp",
+    src: "/banners/ekadashi-desktop.webp",
+    mobileSrc: "/banners/ekadashi-mobile.webp",
     alt: "Ekadashi banner"
   }
 ];
@@ -39,19 +53,22 @@ export const goSevaCards = [
 ];
 
 export const galleryImages = [
-  "https://www.harekrishnavizag.org/images/a75.webp",
-  "https://www.harekrishnavizag.org/images/a2.webp",
-  "https://www.harekrishnavizag.org/images/a3.webp",
-  "https://www.harekrishnavizag.org/images/a4.webp"
-];
-
-export const navLinks = [
-  { label: "HARE KRISHNA MOVEMENT", href: "https://www.harekrishnavizag.org/aboutus" },
-  { label: "CONTACT US", href: "https://www.harekrishnavizag.org/contactus" },
-  { label: "SUBHOJANAM", href: "https://www.harekrishnavizag.org/subhojanam" },
-  { label: "TERMS & CONDITIONS", href: "https://www.harekrishnavizag.org/terms_and_conditions" },
-  { label: "REFUND POLICY", href: "https://www.harekrishnavizag.org/cancellation_and_refund_policy" },
-  { label: "PRIVACY POLICY", href: "https://www.harekrishnavizag.org/privacy_policy" }
+  {
+    src: "/gallery/service-activity-1.png",
+    alt: "Eminent personalities supporting the cause"
+  },
+  {
+    src: "/gallery/service-activity-2.png",
+    alt: "Well-wishers and supporters standing with the mission"
+  },
+  {
+    src: "/gallery/service-activity-3.png",
+    alt: "Daily anna-daan service activity"
+  },
+  {
+    src: "/gallery/service-activity-4.png",
+    alt: "Children receiving annadaan support"
+  }
 ];
 
 const withVariant = (items, variant, sectionTitle) =>
