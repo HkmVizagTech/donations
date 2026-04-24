@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function BannerCarousel({ slides }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -22,14 +21,17 @@ export default function BannerCarousel({ slides }) {
       >
         {slides.map((slide, index) => (
           <a key={slide.src} href={slide.href} className="carousel-slide">
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              sizes="100vw"
-              priority={index === 0}
-              className="carousel-image"
-            />
+            <picture>
+              {slide.mobileSrc ? (
+                <source media="(max-width: 640px)" srcSet={slide.mobileSrc} />
+              ) : null}
+              <img
+                src={slide.src}
+                alt={slide.alt}
+                className="carousel-image"
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+            </picture>
           </a>
         ))}
       </div>
