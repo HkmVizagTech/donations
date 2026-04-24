@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const indianStates = [
   "Andhra Pradesh",
@@ -41,17 +42,37 @@ const indianStates = [
   "Puducherry"
 ];
 
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
 export default function CheckoutPage({
   donation,
   embedded = false,
   onClose
 }) {
+  const router = useRouter();
   const [customAmount, setCustomAmount] = useState(
     donation.numericAmount ? String(donation.numericAmount) : ""
   );
   const [needs80G, setNeeds80G] = useState(false);
   const [wantsPrasadam, setWantsPrasadam] = useState(false);
   const [prasadamSameAddress, setPrasadamSameAddress] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Form field states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [panNumber, setPanNumber] = useState("");
+  const [sevaInNameOf, setSevaInNameOf] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [prasadamAddress, setPrasadamAddress] = useState("");
+  const [prasadamCity, setPrasadamCity] = useState("");
+  const [prasadamState, setPrasadamState] = useState("");
+  const [prasadamPincode, setPrasadamPincode] = useState("");
 
   const displayAmount = useMemo(() => {
     if (donation.numericAmount > 0) {
@@ -61,6 +82,136 @@ export default function CheckoutPage({
     const parsed = Number(customAmount.replace(/[^\d]/g, ""));
     return parsed ? `Rs. ${parsed.toLocaleString("en-IN")}` : "Enter amount";
   }, [customAmount, donation.amount, donation.numericAmount]);
+
+  const finalAmount = useMemo(() => {
+    if (donation.numericAmount > 0) {
+      return donation.numericAmount;
+    }
+    return Number(customAmount.replace(/[^\d]/g, "")) || 0;
+  }, [customAmount, donation.numericAmount]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!name.trim() || !mobile.trim() || !email.trim()) {
+      setErrorMessage("Please fill in all required fields: name, mobile, and email.");
+      return;
+    }
+
+    if (!finalAmount || finalAmount < 1) {
+      setErrorMessage("Please enter a valid donation amount.");
+      return;
+    }
+
+    if (needs80G) {
+      if (!panNumber.trim()) {
+        setErrorMessage("PAN number is required for 80G certificate.");
+        return;
+      }
+      if (!address.trim() || !city.trim() || !state.trim() || !pincode.trim()) {
+        setErrorMessage("Complete address is required for 80G certificate.");
+        return;
+      }
+    }
+
+    if (wantsPrasadam && !prasadamSameAddress) {
+      if (!prasadamAddress.trim() || !prasadamCity.trim() || !prasadamState.trim() || !prasadamPincode.trim()) {
+        setErrorMessage("Complete prasadam delivery address is required.");
+        return;
+      }
+    }
+
+    setErrorMessage("");
+    setIsProcessing(true);
+
+    try {
+      // Create order on backend
+      const orderResponse = await fetch(`${BACKEND_API_URL}/api/payment/create-order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          email: email.trim(),
+          mobile: mobile.trim(),
+          Akshaya_tritiya: true,
+          type: donation.title,
+          sevaName: donation.title,
+          occasion: "Akshaya Tritiya",
+          sevaDate: new Date().toISOString().slice(0, 10),
+          dob: new Date().toISOString().slice(0, 10),
+          amount: finalAmount,
+          certificate: needs80G,
+          panNumber: needs80G ? panNumber.trim() : "",
+          address: needs80G ? address.trim() : "",
+          city: needs80G ? city.trim() : "",
+          state: needs80G ? state.trim() : "",
+          pincode: needs80G ? pincode.trim() : "",
+          mahaprasadam: wantsPrasadam,
+          prasadamAddressOption: wantsPrasadam ? (prasadamSameAddress ? "same" : "different") : "same",
+          prasadamAddress: wantsPrasadam && !prasadamSameAddress ? prasadamAddress.trim() : "",
+        }),
+      });
+
+      if (!orderResponse.ok) {
+        const errorData = await orderResponse.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to create payment order");
+      }
+
+      const orderData = await orderResponse.json();
+
+      // Load Razorpay script if not already loaded
+      if (!window.Razorpay) {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        document.body.appendChild(script);
+        await new Promise((resolve) => {
+          script.onload = resolve;
+        });
+      }
+
+      // Initialize Razorpay
+      const options = {
+        key: orderData.key,
+        amount: finalAmount * 100,
+        currency: "INR",
+        name: "ISKCON Gambheeram",
+        description: `Donation for ${donation.title}`,
+        order_id: orderData.orderId,
+        prefill: {
+          name: name.trim(),
+          email: email.trim(),
+          contact: mobile.trim(),
+        },
+        notes: {
+          donationId: orderData.donationId,
+          sevaType: donation.title,
+        },
+        theme: {
+          color: "#FF9933",
+        },
+        handler: function (response) {
+          // Payment successful
+          router.push(`/thank-you?paymentId=${response.razorpay_payment_id}&amount=${finalAmount}&seva=${encodeURIComponent(donation.title)}`);
+        },
+        modal: {
+          ondismiss: function() {
+            setIsProcessing(false);
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (error) {
+      console.error("Payment error:", error);
+      setErrorMessage(error.message || "Payment initialization failed. Please try again.");
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div className={`checkout-page${embedded ? " checkout-page-embedded" : ""}`}>
@@ -107,25 +258,45 @@ export default function CheckoutPage({
 
           <form
             className="checkout-form"
-            onSubmit={(event) => event.preventDefault()}
+            onSubmit={handleSubmit}
           >
             <div className="checkout-field-grid">
               <label className="checkout-field">
-                <input type="text" placeholder="Donor Name" required />
+                <input 
+                  type="text" 
+                  placeholder="Donor Name" 
+                  required 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
               </label>
               <label className="checkout-field">
-                <input type="tel" placeholder="Mobile Number" required />
+                <input 
+                  type="tel" 
+                  placeholder="Mobile Number" 
+                  required 
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                />
               </label>
             </div>
 
             <div className="checkout-field-grid">
               <label className="checkout-field">
-                <input type="email" placeholder="E-Mail ID" required />
+                <input 
+                  type="email" 
+                  placeholder="E-Mail ID" 
+                  required 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </label>
               <label className="checkout-field">
-                <input
-                  type="text"
+                <input 
+                  type="text" 
                   placeholder="PAN Number"
+                  value={panNumber}
+                  onChange={(e) => setPanNumber(e.target.value)}
                   required={needs80G}
                 />
               </label>
@@ -133,7 +304,12 @@ export default function CheckoutPage({
 
             <div className="checkout-field-grid">
               <label className="checkout-field">
-                <input type="text" placeholder="Seva In The Name Of" />
+                <input 
+                  type="text" 
+                  placeholder="Seva In The Name Of"
+                  value={sevaInNameOf}
+                  onChange={(e) => setSevaInNameOf(e.target.value)}
+                />
               </label>
               <label className="checkout-field">
                 <input
@@ -198,16 +374,29 @@ export default function CheckoutPage({
                   <textarea
                     rows="4"
                     placeholder="80G Address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                     required={needs80G}
                   />
                 </label>
 
                 <div className="checkout-field-grid">
                   <label className="checkout-field">
-                    <input type="text" placeholder="City" required={needs80G} />
+                    <input 
+                      type="text" 
+                      placeholder="City" 
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      required={needs80G} 
+                    />
                   </label>
                   <label className="checkout-field">
-                    <select defaultValue="" required={needs80G}>
+                    <select 
+                      defaultValue="" 
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      required={needs80G}
+                    >
                       <option value="" disabled>
                         State
                       </option>
@@ -222,7 +411,13 @@ export default function CheckoutPage({
 
                 <div className="checkout-field-grid single-compact">
                   <label className="checkout-field">
-                    <input type="text" placeholder="Pincode" required={needs80G} />
+                    <input 
+                      type="text" 
+                      placeholder="Pincode" 
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value)}
+                      required={needs80G} 
+                    />
                   </label>
                 </div>
               </div>
@@ -265,6 +460,8 @@ export default function CheckoutPage({
                           <textarea
                             rows="4"
                             placeholder="Prasadam Address"
+                            value={prasadamAddress}
+                            onChange={(e) => setPrasadamAddress(e.target.value)}
                             required={wantsPrasadam && !prasadamSameAddress}
                           />
                         </label>
@@ -274,12 +471,16 @@ export default function CheckoutPage({
                             <input
                               type="text"
                               placeholder="City"
+                              value={prasadamCity}
+                              onChange={(e) => setPrasadamCity(e.target.value)}
                               required={wantsPrasadam && !prasadamSameAddress}
                             />
                           </label>
                           <label className="checkout-field">
                             <select
                               defaultValue=""
+                              value={prasadamState}
+                              onChange={(e) => setPrasadamState(e.target.value)}
                               required={wantsPrasadam && !prasadamSameAddress}
                             >
                               <option value="" disabled>
@@ -299,6 +500,8 @@ export default function CheckoutPage({
                             <input
                               type="text"
                               placeholder="Pincode"
+                              value={prasadamPincode}
+                              onChange={(e) => setPrasadamPincode(e.target.value)}
                               required={wantsPrasadam && !prasadamSameAddress}
                             />
                           </label>
@@ -363,8 +566,18 @@ export default function CheckoutPage({
               <span className="checkout-payment-tag">Secure</span>
             </div>
 
-            <button type="submit" className="checkout-submit">
-              Continue To Razorpay
+            {errorMessage && (
+              <div className="checkout-error-message">
+                <p>{errorMessage}</p>
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              className="checkout-submit"
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Processing..." : "Continue To Razorpay"}
             </button>
           </form>
         </div>
