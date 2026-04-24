@@ -2,8 +2,9 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default function ThankYouPage() {
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const paymentId = searchParams.get("paymentId");
   const amount = searchParams.get("amount");
@@ -158,5 +159,64 @@ export default function ThankYouPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "2rem",
+      backgroundColor: "#f8f9fa"
+    }}>
+      <div style={{
+        width: "100%",
+        maxWidth: "500px",
+        backgroundColor: "white",
+        borderRadius: "12px",
+        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        overflow: "hidden",
+        textAlign: "center",
+        padding: "2rem"
+      }}>
+        <div style={{
+          margin: "0 auto 1rem",
+          width: "80px",
+          height: "80px",
+          backgroundColor: "#FFD700",
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}>
+          <div style={{
+            width: "40px",
+            height: "40px",
+            border: "4px solid #FF9933",
+            borderTop: "4px solid transparent",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite"
+          }}></div>
+        </div>
+        <p>Loading...</p>
+        <style jsx>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ThankYouContent />
+    </Suspense>
   );
 }
