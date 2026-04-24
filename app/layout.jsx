@@ -8,9 +8,13 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: "Akshaya Tritiya Seva | Hare Krishna Movement",
+  metadataBase: new URL("https://annadan.harekrishnavizag.org"),
+  title: {
+    default: "Annadan Donation | Gau Seva Donation | Hare Krishna Movement Vizag",
+    template: "%s | Hare Krishna Movement Vizag"
+  },
   description:
-    "A mobile-friendly Next.js donation landing page for Akshaya Tritiya with improved UI, rich sections, and clear seva calls to action."
+    "Support Annadan donation, Annadanam seva, Gau Seva donation and festival charity initiatives from Hare Krishna Movement Vizag through a fast, mobile-friendly donation experience."
 };
 
 export default function RootLayout({ children }) {

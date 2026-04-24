@@ -14,7 +14,7 @@ export const sliderImages = [
   {
     href: "#annadaan",
     src: "/banners/5-billion-meals-desktop.webp",
-    mobileSrc: "/banners/5-billion-meals-mobile.jpeg",
+    mobileSrc: "/banners/5-billion-meals-mobile-final.jpeg",
     alt: "5 Billion Meals banner"
   },
   {
