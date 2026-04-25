@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { trackMetaCustomEvent, trackMetaEvent } from "@/lib/metaPixel";
 
 const indianStates = [
   "Andhra Pradesh",
@@ -43,6 +44,32 @@ const indianStates = [
 ];
 
 const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
+function getStoredUtm() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const utm = {
+    source: params.get("utm_source"),
+    medium: params.get("utm_medium"),
+    campaign: params.get("utm_campaign"),
+    content: params.get("utm_content"),
+    term: params.get("utm_term")
+  };
+
+  if (Object.values(utm).some(Boolean)) {
+    window.localStorage.setItem("utm", JSON.stringify(utm));
+    return utm;
+  }
+
+  try {
+    return JSON.parse(window.localStorage.getItem("utm"));
+  } catch {
+    return null;
+  }
+}
 
 function loadRazorpayScript() {
   if (window.Razorpay) {
@@ -101,6 +128,19 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
 
     return Number(customAmount.replace(/[^\d]/g, "")) || 0;
   }, [customAmount, donation.numericAmount]);
+
+  useEffect(() => {
+    if (!finalAmount) {
+      return;
+    }
+
+    trackMetaEvent("ViewContent", {
+      content_name: donation.title,
+      content_type: "donation",
+      currency: "INR",
+      value: finalAmount
+    });
+  }, [donation.title, finalAmount]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -164,6 +204,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         wantsPrasadam && needs80G && prasadamSameAddress ? state.trim() : prasadamState.trim();
       const finalPrasadamPincode =
         wantsPrasadam && needs80G && prasadamSameAddress ? pincode.trim() : prasadamPincode.trim();
+      const utm = getStoredUtm();
 
       const orderResponse = await fetch(`${BACKEND_API_URL}/api/payment/create-order`, {
         method: "POST",
@@ -193,7 +234,8 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           prasadamAddress: wantsPrasadam ? finalPrasadamAddress : "",
           prasadamCity: wantsPrasadam ? finalPrasadamCity : "",
           prasadamState: wantsPrasadam ? finalPrasadamState : "",
-          prasadamPincode: wantsPrasadam ? finalPrasadamPincode : ""
+          prasadamPincode: wantsPrasadam ? finalPrasadamPincode : "",
+          ...(utm ? { utm } : {})
         })
       });
 
@@ -225,6 +267,18 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           color: "#d86d24"
         },
         handler(response) {
+          const paymentId = response.razorpay_payment_id || response.razorpay_subscription_id;
+          trackMetaEvent(
+            "Purchase",
+            {
+              content_name: donation.title,
+              content_type: "donation",
+              currency: "INR",
+              value: finalAmount,
+              content_ids: paymentId ? [paymentId] : undefined
+            },
+            { eventID: paymentId }
+          );
           router.push(
             `/thank-you?paymentId=${response.razorpay_payment_id}&amount=${finalAmount}&seva=${encodeURIComponent(
               donation.title
@@ -233,12 +287,23 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         },
         modal: {
           ondismiss() {
+            trackMetaCustomEvent("PaymentAbandoned", {
+              content_name: donation.title,
+              currency: "INR",
+              value: finalAmount
+            });
             setIsProcessing(false);
           }
         }
       });
 
       rzp.open();
+      trackMetaEvent("InitiateCheckout", {
+        content_name: donation.title,
+        content_type: "donation",
+        currency: "INR",
+        value: finalAmount
+      });
     } catch (error) {
       console.error("Payment error:", error);
       setErrorMessage(error.message || "Payment initialization failed. Please try again.");

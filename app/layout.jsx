@@ -1,4 +1,5 @@
 import { Poppins } from "next/font/google";
+import MetaPixel from "@/components/MetaPixel";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -20,7 +21,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable}`}>{children}</body>
+      <body className={`${poppins.variable}`}>
+        <MetaPixel />
+        {children}
+      </body>
     </html>
   );
 }
