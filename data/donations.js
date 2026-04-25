@@ -1,8 +1,8 @@
 export const sliderImages = [
   {
     href: "#annadaan",
-    src: "/banners/narasimha-jayanthi-desktop.jpeg",
-    mobileSrc: "/banners/narasimha-jayanthi-mobile.jpeg",
+    src: "/banners/nsj-annadan-web.jpeg",
+    mobileSrc: "/banners/nsj-annadan-mobile.jpeg",
     alt: "Narasimha Jayanthi banner"
   },
   {
@@ -26,6 +26,9 @@ export const sliderImages = [
 ];
 
 export const annadaanCards = [
+  { sevaId: "251", title: "Offer Annadaan Seva", amount: "Rs. 251", numericAmount: 251 },
+  { sevaId: "500", title: "Support Annadaan Seva", amount: "Rs. 500", numericAmount: 500 },
+  { sevaId: "1000", title: "Sponsor Annadaan Seva", amount: "Rs. 1000", numericAmount: 1000 },
   { sevaId: "11", title: "Feed 50 people", amount: "Rs. 1501", numericAmount: 1501 },
   { sevaId: "1", title: "Feed 100 people", amount: "Rs. 3001", numericAmount: 3001 },
   { sevaId: "2", title: "Feed 200 people", amount: "Rs. 6001", numericAmount: 6001 },
@@ -40,6 +43,9 @@ export const annadaanCards = [
 ];
 
 export const goSevaCards = [
+  { sevaId: "251-gau", title: "Offer Gau Seva", amount: "Rs. 251", numericAmount: 251 },
+  { sevaId: "500-gau", title: "Support Gau Seva", amount: "Rs. 500", numericAmount: 500 },
+  { sevaId: "1000-gau", title: "Sponsor Gau Seva", amount: "Rs. 1000", numericAmount: 1000 },
   { sevaId: "21", title: "Feed 10 Cows For A Day", amount: "Rs. 1500", numericAmount: 1500 },
   { sevaId: "12", title: "Medicines For Cow", amount: "Rs. 2500", numericAmount: 2500 },
   { sevaId: "13", title: "Feed A Cow For A Month", amount: "Rs. 3500", numericAmount: 3500 },

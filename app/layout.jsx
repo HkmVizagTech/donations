@@ -15,7 +15,7 @@ export const metadata = {
     template: "%s | Hare Krishna Movement Vizag"
   },
   description:
-    "Support Annadan donation, Annadanam seva, Gau Seva donation and festival charity initiatives from Hare Krishna Movement Vizag through a fast, mobile-friendly donation experience."
+    "Support Annadan donation, Annadanam seva, Gau Seva donation, food donation and charitable seva initiatives from Hare Krishna Movement Vizag through a fast, mobile-friendly donation experience."
 };
 
 export default function RootLayout({ children }) {

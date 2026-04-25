@@ -96,6 +96,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
   const [prasadamSameAddress, setPrasadamSameAddress] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [dobInputType, setDobInputType] = useState("text");
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -129,18 +130,73 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
     return Number(customAmount.replace(/[^\d]/g, "")) || 0;
   }, [customAmount, donation.numericAmount]);
 
-  useEffect(() => {
-    if (!finalAmount) {
-      return;
-    }
+  const canShow80G = finalAmount >= 1000;
+  const canShowPrasadam = finalAmount >= 1000;
 
-    trackMetaEvent("ViewContent", {
-      content_name: donation.title,
-      content_type: "donation",
-      currency: "INR",
-      value: finalAmount
-    });
-  }, [donation.title, finalAmount]);
+  useEffect(() => {
+    setCustomAmount(donation.numericAmount ? String(donation.numericAmount) : "");
+    setNeeds80G(false);
+    setWantsPrasadam(false);
+    setPrasadamSameAddress(true);
+    setIsProcessing(false);
+    setErrorMessage("");
+    setDobInputType("text");
+
+    setName("");
+    setMobile("");
+    setDob("");
+    setEmail("");
+    setPanNumber("");
+    setSevaInNameOf("");
+    setAddress("");
+    setCity("");
+    setState("");
+    setPincode("");
+    setPrasadamAddress("");
+    setPrasadamCity("");
+    setPrasadamState("");
+    setPrasadamPincode("");
+
+    if (donation.numericAmount > 0) {
+      trackMetaEvent("ViewContent", {
+        content_name: donation.title,
+        content_category: donation.sectionTitle,
+        content_type: "donation",
+        currency: "INR",
+        value: donation.numericAmount
+      });
+      trackMetaEvent("InitiateCheckout", {
+        content_name: donation.title,
+        content_category: donation.sectionTitle,
+        content_type: "donation",
+        currency: "INR",
+        value: donation.numericAmount
+      });
+      trackMetaCustomEvent("DonationCheckoutOpened", {
+        content_name: donation.title,
+        content_category: donation.sectionTitle,
+        currency: "INR",
+        value: donation.numericAmount
+      });
+    }
+  }, [donation]);
+
+  useEffect(() => {
+    if (!canShow80G && needs80G) {
+      setNeeds80G(false);
+    }
+  }, [canShow80G, needs80G]);
+
+  useEffect(() => {
+    if (!canShowPrasadam && wantsPrasadam) {
+      setWantsPrasadam(false);
+      setPrasadamSameAddress(true);
+      setPrasadamAddress("");
+      setPrasadamCity("");
+      setPrasadamState("");
+      setPrasadamPincode("");
+    }
+  }, [canShowPrasadam, wantsPrasadam]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -150,18 +206,13 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
       return;
     }
 
-    if (!name.trim() || !mobile.trim()) {
-      setErrorMessage("Please enter donor name and mobile number.");
+    if (!name.trim() || !mobile.trim() || !dob) {
+      setErrorMessage("Please enter donor name, mobile number, and date of birth.");
       return;
     }
 
     if (!finalAmount || finalAmount < 1) {
       setErrorMessage("Please enter a valid donation amount.");
-      return;
-    }
-
-    if (needs80G && finalAmount < 1000) {
-      setErrorMessage("80G is available only for donations of Rs. 1000 and above.");
       return;
     }
 
@@ -196,6 +247,14 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
     setIsProcessing(true);
 
     try {
+      trackMetaEvent("AddPaymentInfo", {
+        content_name: donation.title,
+        content_category: donation.sectionTitle,
+        content_type: "donation",
+        currency: "INR",
+        value: finalAmount
+      });
+
       const finalPrasadamAddress =
         wantsPrasadam && needs80G && prasadamSameAddress ? address.trim() : prasadamAddress.trim();
       const finalPrasadamCity =
@@ -219,7 +278,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           Akshaya_tritiya: true,
           type: donation.title,
           sevaName: donation.title,
-          occasion: "Akshaya Tritiya",
+          occasion: donation.sectionTitle,
           sevaDate: new Date().toISOString().slice(0, 10),
           amount: finalAmount,
           certificate: needs80G,
@@ -230,7 +289,11 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           pincode: needs80G ? pincode.trim() : "",
           inTheNameOf: sevaInNameOf.trim(),
           mahaprasadam: wantsPrasadam,
-          prasadamAddressOption: wantsPrasadam ? (needs80G && prasadamSameAddress ? "same" : "different") : "same",
+          prasadamAddressOption: wantsPrasadam
+            ? needs80G && prasadamSameAddress
+              ? "same"
+              : "different"
+            : "same",
           prasadamAddress: wantsPrasadam ? finalPrasadamAddress : "",
           prasadamCity: wantsPrasadam ? finalPrasadamCity : "",
           prasadamState: wantsPrasadam ? finalPrasadamState : "",
@@ -268,10 +331,12 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         },
         handler(response) {
           const paymentId = response.razorpay_payment_id || response.razorpay_subscription_id;
+
           trackMetaEvent(
             "Purchase",
             {
               content_name: donation.title,
+              content_category: donation.sectionTitle,
               content_type: "donation",
               currency: "INR",
               value: finalAmount,
@@ -279,6 +344,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
             },
             { eventID: paymentId }
           );
+
           router.push(
             `/thank-you?paymentId=${response.razorpay_payment_id}&amount=${finalAmount}&seva=${encodeURIComponent(
               donation.title
@@ -289,6 +355,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           ondismiss() {
             trackMetaCustomEvent("PaymentAbandoned", {
               content_name: donation.title,
+              content_category: donation.sectionTitle,
               currency: "INR",
               value: finalAmount
             });
@@ -298,12 +365,6 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
       });
 
       rzp.open();
-      trackMetaEvent("InitiateCheckout", {
-        content_name: donation.title,
-        content_type: "donation",
-        currency: "INR",
-        value: finalAmount
-      });
     } catch (error) {
       console.error("Payment error:", error);
       setErrorMessage(error.message || "Payment initialization failed. Please try again.");
@@ -315,10 +376,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
     <div className={`checkout-page${embedded ? " checkout-page-embedded" : ""}`}>
       {embedded ? (
         <section className="container-wide embedded-checkout-header">
-          <div>
-            <p className="checkout-eyebrow">Fast Checkout</p>
-            <h2 className="embedded-checkout-title">Complete your offering here</h2>
-          </div>
+          <div />
           {onClose ? (
             <button type="button" className="embedded-checkout-close" onClick={onClose}>
               Close
@@ -331,9 +389,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         <div className="checkout-panel checkout-panel-compact">
           <div className="checkout-compact-top">
             <div>
-              <p className="checkout-eyebrow">Donation Checkout</p>
               <h3>{donation.title}</h3>
-              <p className="checkout-compact-subtitle">{donation.sectionTitle}</p>
             </div>
             <div className={`checkout-compact-amount checkout-compact-${donation.variant}`}>
               <span>Amount</span>
@@ -342,44 +398,50 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           </div>
 
           <form className="checkout-form checkout-form-compact" onSubmit={handleSubmit}>
-            <div className="checkout-field-grid">
-              <label className="checkout-field">
-                <input
-                  type="text"
-                  placeholder="Donor Name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  required
-                />
-              </label>
-              <label className="checkout-field">
-                <input
-                  type="tel"
-                  placeholder="Mobile Number"
-                  value={mobile}
-                  onChange={(event) => setMobile(event.target.value)}
-                  required
-                />
-              </label>
-            </div>
+            <label className="checkout-field">
+              <input
+                type="text"
+                placeholder="Donor Name"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+              />
+            </label>
 
-            <div className="checkout-field-grid">
-              <label className="checkout-field">
-                <input
-                  type="date"
-                  value={dob}
-                  onChange={(event) => setDob(event.target.value)}
-                />
-              </label>
-              <label className="checkout-field">
-                <input
-                  type="email"
-                  placeholder="E-Mail ID (Optional)"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                />
-              </label>
-            </div>
+            <label className="checkout-field">
+              <input
+                type="tel"
+                placeholder="Mobile Number"
+                value={mobile}
+                onChange={(event) => setMobile(event.target.value)}
+                required
+              />
+            </label>
+
+            <label className="checkout-field">
+              <input
+                type={dobInputType}
+                value={dob}
+                onChange={(event) => setDob(event.target.value)}
+                onFocus={() => setDobInputType("date")}
+                onBlur={(event) => {
+                  if (!event.target.value) {
+                    setDobInputType("text");
+                  }
+                }}
+                placeholder="Date of Birth"
+                required
+              />
+            </label>
+
+            <label className="checkout-field">
+              <input
+                type="email"
+                placeholder="E-Mail ID (Optional)"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </label>
 
             <label className="checkout-field checkout-amount-field">
               <span className="checkout-field-caption">Donation Amount</span>
@@ -403,29 +465,31 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
             </label>
 
             <div className="checkout-check-options">
-              <label className="checkout-check-card">
-                <input
-                  type="checkbox"
-                  checked={needs80G}
-                  onChange={(event) => setNeeds80G(event.target.checked)}
-                />
-                <div>
-                  <strong>80G required</strong>
-                  <p>Enable this if you need a tax receipt for eligible donations.</p>
-                </div>
-              </label>
+              {canShow80G ? (
+                <label className="checkout-check-card checkout-check-card-minimal">
+                  <input
+                    type="checkbox"
+                    checked={needs80G}
+                    onChange={(event) => setNeeds80G(event.target.checked)}
+                  />
+                  <div>
+                    <strong>80G Required</strong>
+                  </div>
+                </label>
+              ) : null}
 
-              <label className="checkout-check-card">
-                <input
-                  type="checkbox"
-                  checked={wantsPrasadam}
-                  onChange={(event) => setWantsPrasadam(event.target.checked)}
-                />
-                <div>
-                  <strong>Receive Maha Prasadam</strong>
-                  <p>We can deliver Maha Prasadam within India.</p>
-                </div>
-              </label>
+              {canShowPrasadam ? (
+                <label className="checkout-check-card checkout-check-card-minimal">
+                  <input
+                    type="checkbox"
+                    checked={wantsPrasadam}
+                    onChange={(event) => setWantsPrasadam(event.target.checked)}
+                  />
+                  <div>
+                    <strong>Receive Maha Prasadam</strong>
+                  </div>
+                </label>
+              ) : null}
             </div>
 
             {needs80G ? (
@@ -434,31 +498,25 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
                   <h3>80G receipt details</h3>
                 </div>
 
-                <p className="checkout-note">
-                  80G is available only for donations of Rs. 1000 and above. PAN and address are
-                  mandatory.
-                </p>
+                <label className="checkout-field">
+                  <input
+                    type="text"
+                    placeholder="PAN Number"
+                    value={panNumber}
+                    onChange={(event) => setPanNumber(event.target.value)}
+                    required={needs80G}
+                  />
+                </label>
 
-                <div className="checkout-field-grid">
-                  <label className="checkout-field">
-                    <input
-                      type="text"
-                      placeholder="PAN Number"
-                      value={panNumber}
-                      onChange={(event) => setPanNumber(event.target.value)}
-                      required={needs80G}
-                    />
-                  </label>
-                  <label className="checkout-field">
-                    <input
-                      type="text"
-                      placeholder="City"
-                      value={city}
-                      onChange={(event) => setCity(event.target.value)}
-                      required={needs80G}
-                    />
-                  </label>
-                </div>
+                <label className="checkout-field">
+                  <input
+                    type="text"
+                    placeholder="City"
+                    value={city}
+                    onChange={(event) => setCity(event.target.value)}
+                    required={needs80G}
+                  />
+                </label>
 
                 <label className="checkout-field">
                   <textarea
@@ -470,33 +528,32 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
                   />
                 </label>
 
-                <div className="checkout-field-grid">
-                  <label className="checkout-field">
-                    <select
-                      value={state}
-                      onChange={(event) => setState(event.target.value)}
-                      required={needs80G}
-                    >
-                      <option value="" disabled>
-                        State
+                <label className="checkout-field">
+                  <select
+                    value={state}
+                    onChange={(event) => setState(event.target.value)}
+                    required={needs80G}
+                  >
+                    <option value="" disabled>
+                      State
+                    </option>
+                    {indianStates.map((stateItem) => (
+                      <option key={stateItem} value={stateItem}>
+                        {stateItem}
                       </option>
-                      {indianStates.map((stateItem) => (
-                        <option key={stateItem} value={stateItem}>
-                          {stateItem}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="checkout-field">
-                    <input
-                      type="text"
-                      placeholder="Pincode"
-                      value={pincode}
-                      onChange={(event) => setPincode(event.target.value)}
-                      required={needs80G}
-                    />
-                  </label>
-                </div>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="checkout-field">
+                  <input
+                    type="text"
+                    placeholder="Pincode"
+                    value={pincode}
+                    onChange={(event) => setPincode(event.target.value)}
+                    required={needs80G}
+                  />
+                </label>
               </div>
             ) : null}
 
@@ -542,33 +599,32 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
                           />
                         </label>
 
-                        <div className="checkout-field-grid">
-                          <label className="checkout-field">
-                            <input
-                              type="text"
-                              placeholder="City"
-                              value={prasadamCity}
-                              onChange={(event) => setPrasadamCity(event.target.value)}
-                              required={wantsPrasadam && !prasadamSameAddress}
-                            />
-                          </label>
-                          <label className="checkout-field">
-                            <select
-                              value={prasadamState}
-                              onChange={(event) => setPrasadamState(event.target.value)}
-                              required={wantsPrasadam && !prasadamSameAddress}
-                            >
-                              <option value="" disabled>
-                                State
+                        <label className="checkout-field">
+                          <input
+                            type="text"
+                            placeholder="City"
+                            value={prasadamCity}
+                            onChange={(event) => setPrasadamCity(event.target.value)}
+                            required={wantsPrasadam && !prasadamSameAddress}
+                          />
+                        </label>
+
+                        <label className="checkout-field">
+                          <select
+                            value={prasadamState}
+                            onChange={(event) => setPrasadamState(event.target.value)}
+                            required={wantsPrasadam && !prasadamSameAddress}
+                          >
+                            <option value="" disabled>
+                              State
+                            </option>
+                            {indianStates.map((stateItem) => (
+                              <option key={stateItem} value={stateItem}>
+                                {stateItem}
                               </option>
-                              {indianStates.map((stateItem) => (
-                                <option key={stateItem} value={stateItem}>
-                                  {stateItem}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        </div>
+                            ))}
+                          </select>
+                        </label>
 
                         <label className="checkout-field">
                           <input
@@ -594,33 +650,32 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
                       />
                     </label>
 
-                    <div className="checkout-field-grid">
-                      <label className="checkout-field">
-                        <input
-                          type="text"
-                          placeholder="City"
-                          value={prasadamCity}
-                          onChange={(event) => setPrasadamCity(event.target.value)}
-                          required={wantsPrasadam}
-                        />
-                      </label>
-                      <label className="checkout-field">
-                        <select
-                          value={prasadamState}
-                          onChange={(event) => setPrasadamState(event.target.value)}
-                          required={wantsPrasadam}
-                        >
-                          <option value="" disabled>
-                            State
+                    <label className="checkout-field">
+                      <input
+                        type="text"
+                        placeholder="City"
+                        value={prasadamCity}
+                        onChange={(event) => setPrasadamCity(event.target.value)}
+                        required={wantsPrasadam}
+                      />
+                    </label>
+
+                    <label className="checkout-field">
+                      <select
+                        value={prasadamState}
+                        onChange={(event) => setPrasadamState(event.target.value)}
+                        required={wantsPrasadam}
+                      >
+                        <option value="" disabled>
+                          State
+                        </option>
+                        {indianStates.map((stateItem) => (
+                          <option key={stateItem} value={stateItem}>
+                            {stateItem}
                           </option>
-                          {indianStates.map((stateItem) => (
-                            <option key={stateItem} value={stateItem}>
-                              {stateItem}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                    </div>
+                        ))}
+                      </select>
+                    </label>
 
                     <label className="checkout-field">
                       <input

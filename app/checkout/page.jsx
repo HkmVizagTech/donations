@@ -4,7 +4,7 @@ import { getDonationBySevaId } from "@/data/donations";
 export const metadata = {
   title: "Checkout | Hare Krishna Vizag",
   description:
-    "Frontend donation checkout flow for Akshaya Tritiya seva offerings."
+    "Frontend donation checkout flow for Annadan, Gau Seva and related donation offerings."
 };
 
 export default async function CheckoutRoute({ searchParams }) {

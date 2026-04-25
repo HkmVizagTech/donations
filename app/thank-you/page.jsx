@@ -1,14 +1,35 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
+import { trackMetaCustomEvent, trackMetaEvent } from "@/lib/metaPixel";
 
 function ThankYouContent() {
   const searchParams = useSearchParams();
   const paymentId = searchParams.get("paymentId");
   const amount = searchParams.get("amount");
   const seva = searchParams.get("seva");
+
+  useEffect(() => {
+    const parsedAmount = Number(amount || 0);
+    const payload = {
+      currency: "INR",
+      value: parsedAmount || 0
+    };
+
+    if (seva) {
+      payload.content_name = seva;
+    }
+
+    if (paymentId) {
+      payload.transaction_id = paymentId;
+    }
+
+    trackMetaEvent("Purchase", payload);
+    trackMetaCustomEvent("Donate", payload);
+  }, [amount, paymentId, seva]);
 
   return (
     <div style={{

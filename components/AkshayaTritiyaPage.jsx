@@ -55,6 +55,7 @@ function DonationCard({ title, amount, sevaId, variant, onDonate }) {
 export default function AkshayaTritiyaPage() {
   const [selectedDonation, setSelectedDonation] = useState(null);
   const checkoutRef = useRef(null);
+  const annadaanRef = useRef(null);
 
   useEffect(() => {
     if (!selectedDonation || !checkoutRef.current) {
@@ -74,7 +75,7 @@ export default function AkshayaTritiyaPage() {
   };
 
   return (
-    <main className="exact-page">
+    <main className="exact-page" id="top">
       <section className="hero-slider">
         <div className="container-hero">
           <BannerCarouselShell slides={sliderImages} />
@@ -110,7 +111,7 @@ export default function AkshayaTritiyaPage() {
           <h1>We are thankful for your kind gesture!</h1>
         </div>
 
-        <div className="section-title-wrap">
+        <div className="section-title-wrap" ref={annadaanRef}>
           <h2 className="section-title annadaan-title" id="annadaan">
             ANNADAAN SEVA
           </h2>

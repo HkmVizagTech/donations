@@ -71,6 +71,49 @@ img {
   width: 100%;
 }
 
+.top-donation-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 30;
+  padding: 0;
+  pointer-events: none;
+}
+
+.top-donation-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0 0;
+  pointer-events: auto;
+}
+
+.top-donation-logo-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.top-donation-logo {
+  width: min(100%, 86px);
+  height: auto;
+}
+
+.top-donation-button {
+  min-height: 30px;
+  padding: 0 14px;
+  border: 1px solid hsl(26 70% 75% / 0.95);
+  border-radius: 999px;
+  background: hsl(0 0% 100% / 0.96);
+  color: hsl(17 72% 42%);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 8px 18px -16px hsl(16 70% 30% / 0.22);
+}
+
 .container-narrow,
 .container-wide {
   width: min(1180px, calc(100% - 24px));
@@ -925,11 +968,11 @@ img {
 
 .checkout-page-embedded {
   min-height: 0;
-  padding: 24px 0 8px;
+  padding: 14px 0 6px;
 }
 
 .checkout-compact-wrap {
-  padding-bottom: 28px;
+  padding-bottom: 20px;
 }
 
 .embedded-checkout-header {
@@ -937,18 +980,19 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 18px;
+  margin-bottom: 4px;
+  min-height: 0;
 }
 
 .embedded-checkout-title {
-  margin: 8px 0 0;
-  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  margin: 4px 0 0;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
   color: hsl(220 42% 16%);
 }
 
 .embedded-checkout-close {
-  min-height: 44px;
-  padding: 0 18px;
+  min-height: 36px;
+  padding: 0 14px;
   border: 1px solid hsl(34 32% 82%);
   border-radius: 999px;
   background: hsl(0 0% 100% / 0.86);
@@ -975,18 +1019,19 @@ img {
 .checkout-compact-top {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 18px;
+  gap: 12px;
   align-items: center;
 }
 
 .checkout-compact-subtitle {
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   color: hsl(220 20% 38%);
+  font-size: 0.92rem;
 }
 
 .checkout-compact-amount {
   min-width: 176px;
-  padding: 18px 20px;
+  padding: 14px 16px;
   border-radius: 1rem;
   color: white;
   text-align: center;
@@ -1015,8 +1060,8 @@ img {
 
 .checkout-compact-amount strong {
   display: block;
-  margin-top: 6px;
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  margin-top: 4px;
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
 }
 
 .checkout-hero-inner {
@@ -1039,8 +1084,8 @@ img {
 .checkout-panel h3,
 .checkout-sidebar-card h3,
 .checkout-summary-card h2 {
-  margin: 10px 0 0;
-  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 6px 0 0;
+  font-size: clamp(1.35rem, 2.8vw, 1.8rem);
   line-height: 1.05;
 }
 
@@ -1107,45 +1152,45 @@ img {
 
 .checkout-panel,
 .checkout-sidebar-card {
-  padding: 26px;
+  padding: 18px;
   background: linear-gradient(180deg, hsl(40 100% 98%), hsl(34 72% 95%));
 }
 
 .checkout-form {
   display: grid;
-  gap: 16px;
-  margin-top: 18px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .checkout-form-compact {
-  gap: 14px;
+  gap: 10px;
 }
 
 .checkout-field-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .checkout-field {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .checkout-field input,
 .checkout-field select,
 .checkout-field textarea {
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 1px solid hsl(34 32% 82%);
   border-radius: 0.9rem;
   background: hsl(0 0% 100% / 0.9);
   color: hsl(220 50% 16%);
   outline: none;
   font-family: var(--font-sans), sans-serif;
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.35;
   letter-spacing: 0.01em;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -1155,7 +1200,7 @@ img {
 .checkout-field textarea::placeholder {
   color: hsl(220 26% 30%);
   opacity: 1;
-  font-size: 0.97rem;
+  font-size: 0.92rem;
   font-weight: 600;
   letter-spacing: 0.01em;
 }
@@ -1165,24 +1210,24 @@ img {
 }
 
 .checkout-field-caption {
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: hsl(220 32% 24%);
 }
 
 .checkout-amount-field {
-  gap: 10px;
+  gap: 6px;
 }
 
 .checkout-amount-input {
-  min-height: 62px;
-  font-size: 1.18rem;
+  min-height: 50px;
+  font-size: 1rem;
   font-weight: 700;
   text-align: center;
 }
 
 .checkout-amount-input::placeholder {
-  font-size: 1.08rem;
+  font-size: 0.96rem;
 }
 
 .checkout-field input:focus,
@@ -1194,16 +1239,17 @@ img {
 
 .checkout-check-options {
   display: grid;
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .checkout-check-card,
 .checkout-radio-card {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 12px;
+  gap: 10px;
   align-items: start;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid hsl(34 32% 82%);
   border-radius: 1rem;
   background: hsl(0 0% 100% / 0.76);
@@ -1217,19 +1263,29 @@ img {
 .checkout-check-card strong {
   display: block;
   color: hsl(220 48% 20%);
-  font-size: 1rem;
+  font-size: 0.9rem;
+}
+
+.checkout-check-card-minimal {
+  align-items: center;
+  padding: 10px 12px;
 }
 
 .checkout-check-card p {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   color: hsl(220 18% 42%);
-  line-height: 1.6;
+  line-height: 1.4;
+  font-size: 0.84rem;
+}
+
+.checkout-check-card-minimal p {
+  display: none;
 }
 
 .checkout-conditional-block {
   display: grid;
-  gap: 16px;
-  padding: 18px;
+  gap: 12px;
+  padding: 14px;
   border: 1px solid hsl(34 32% 82%);
   border-radius: 1rem;
   background:
@@ -1240,14 +1296,14 @@ img {
 .checkout-note {
   margin: -2px 0 0;
   color: hsl(220 18% 42%);
-  line-height: 1.7;
-  font-size: 0.94rem;
+  line-height: 1.45;
+  font-size: 0.84rem;
 }
 
 .checkout-inline-choice {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
 
 .checkout-radio-card {
@@ -1266,7 +1322,7 @@ img {
 
 .checkout-submit {
   width: 100%;
-  min-height: 54px;
+  min-height: 48px;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
@@ -1286,10 +1342,10 @@ img {
 .checkout-submit-bar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
+  gap: 10px;
   align-items: center;
-  margin-top: 6px;
-  padding: 14px 16px;
+  margin-top: 2px;
+  padding: 10px 12px;
   border: 1px solid hsl(34 42% 82%);
   border-radius: 1.1rem;
   background:
@@ -1299,7 +1355,7 @@ img {
 
 .checkout-submit-summary span {
   display: block;
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1308,16 +1364,16 @@ img {
 
 .checkout-submit-summary strong {
   display: block;
-  margin-top: 4px;
-  font-size: clamp(1.15rem, 3vw, 1.55rem);
+  margin-top: 2px;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
   line-height: 1.1;
   color: hsl(220 42% 16%);
 }
 
 .checkout-submit-bar .checkout-submit {
   width: auto;
-  min-width: 176px;
-  padding: 0 28px;
+  min-width: 148px;
+  padding: 0 22px;
 }
 
 .checkout-success {
@@ -1366,15 +1422,34 @@ img {
 }
 
 @media (max-width: 640px) {
+  .top-donation-header {
+    padding: 0;
+  }
+
+  .top-donation-header-inner {
+    gap: 8px;
+    padding: 8px 0 0;
+  }
+
+  .top-donation-logo {
+    width: min(100%, 72px);
+  }
+
+  .top-donation-button {
+    min-height: 28px;
+    padding: 0 12px;
+    font-size: 0.7rem;
+  }
+
   .checkout-panel,
   .checkout-summary-card,
   .checkout-sidebar-card {
-    padding: 16px;
+    padding: 14px;
   }
 
   .checkout-field-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 8px;
   }
 
   .checkout-inline-choice {
@@ -1382,15 +1457,15 @@ img {
   }
 
   .checkout-page-embedded {
-    padding-top: 10px;
+    padding-top: 6px;
   }
 
   .checkout-compact-wrap {
-    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px));
   }
 
   .checkout-form-compact {
-    gap: 10px;
+    gap: 8px;
   }
 
   .checkout-panel-compact {
@@ -1399,41 +1474,78 @@ img {
 
   .checkout-compact-amount {
     min-width: 0;
-    padding: 12px 14px;
+    padding: 10px 12px;
   }
 
   .checkout-amount-input {
-    min-height: 54px;
-    font-size: 1.08rem;
+    min-height: 46px;
+    font-size: 0.98rem;
   }
 
   .checkout-field input,
   .checkout-field select,
   .checkout-field textarea {
-    padding: 12px 14px;
+    padding: 11px 12px;
     border-radius: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .checkout-check-card,
   .checkout-radio-card,
   .checkout-conditional-block {
-    padding: 14px;
+    padding: 10px;
+  }
+
+  .checkout-check-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .checkout-submit-bar {
     position: sticky;
-    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
     z-index: 5;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 12px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 8px 10px;
     margin-top: 2px;
     border-radius: 1rem;
     backdrop-filter: blur(12px);
   }
 
   .checkout-submit-bar .checkout-submit {
-    width: 100%;
-    min-width: 0;
+    width: auto;
+    min-width: 124px;
+  }
+}
+
+@media (max-width: 420px) {
+  .top-donation-logo {
+    width: min(100%, 64px);
+  }
+
+  .checkout-compact-subtitle {
+    display: none;
+  }
+
+  .checkout-field-grid {
+    gap: 8px;
+  }
+
+  .checkout-check-card strong {
+    font-size: 0.84rem;
+  }
+
+  .checkout-check-card p {
+    font-size: 0.78rem;
+  }
+
+  .checkout-submit-summary strong {
+    font-size: 0.94rem;
+  }
+
+  .checkout-submit-bar .checkout-submit {
+    min-width: 112px;
+    padding: 0 16px;
   }
 }
