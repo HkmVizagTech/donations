@@ -46,7 +46,7 @@ export default function AdminLogin() {
       }
 
       storeAdminSession(payload.token, payload.admin);
-      router.replace("/admin");
+      router.replace("/admin/dashboard");
     } catch (err) {
       setError(err.message || "Login failed.");
     } finally {
