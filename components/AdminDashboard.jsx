@@ -66,6 +66,24 @@ const emptyCampaignForm = {
   landingPath: ""
 };
 
+const frontendBannerAssets = [
+  { label: "Narasimha Jayanthi Annadaan - Desktop", path: "/banners/nsj-annadan-web.jpeg", format: "desktop" },
+  { label: "Narasimha Jayanthi Annadaan - Mobile", path: "/banners/nsj-annadan-mobile.jpeg", format: "mobile" },
+  { label: "Narasimha Jayanthi - Desktop", path: "/banners/narasimha-jayanthi-desktop.jpeg", format: "desktop" },
+  { label: "Narasimha Jayanthi - Mobile", path: "/banners/narasimha-jayanthi-mobile.jpeg", format: "mobile" },
+  { label: "Gau Seva - Desktop", path: "/banners/gau-seva-desktop.png", format: "desktop" },
+  { label: "Gau Seva - Mobile", path: "/banners/gau-seva-mobile.png", format: "mobile" },
+  { label: "5 Billion Meals - Desktop", path: "/banners/5-billion-meals-desktop.webp", format: "desktop" },
+  { label: "5 Billion Meals - Mobile", path: "/banners/5-billion-meals-mobile-final.jpeg", format: "mobile" },
+  { label: "Ekadashi - Desktop", path: "/banners/ekadashi-desktop.webp", format: "desktop" },
+  { label: "Ekadashi - Mobile", path: "/banners/ekadashi-mobile.webp", format: "mobile" },
+  { label: "Annadaan Banner", path: "/banners/annadaan-banner.webp", format: "desktop" },
+  { label: "Go Seva Banner", path: "/banners/goseva-banner.webp", format: "desktop" }
+];
+
+const desktopBannerAssets = frontendBannerAssets.filter((asset) => asset.format === "desktop");
+const mobileBannerAssets = frontendBannerAssets.filter((asset) => asset.format === "mobile");
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [admin, setAdmin] = useState(null);
@@ -504,9 +522,47 @@ export default function AdminDashboard() {
               <input value={bannerForm.desktopImageUrl} onChange={(event) => updateBannerField("desktopImageUrl", event.target.value)} placeholder="/banners/nsj-annadan-web.jpeg" />
             </label>
             <label>
+              <span>Choose Existing Desktop Image</span>
+              <select value={bannerForm.desktopImageUrl} onChange={(event) => updateBannerField("desktopImageUrl", event.target.value)}>
+                <option value="">Select desktop banner</option>
+                {desktopBannerAssets.map((asset) => (
+                  <option key={asset.path} value={asset.path}>
+                    {asset.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
               <span>Mobile Image URL</span>
               <input value={bannerForm.mobileImageUrl} onChange={(event) => updateBannerField("mobileImageUrl", event.target.value)} placeholder="/banners/nsj-annadan-mobile.jpeg" />
             </label>
+            <label>
+              <span>Choose Existing Mobile Image</span>
+              <select value={bannerForm.mobileImageUrl} onChange={(event) => updateBannerField("mobileImageUrl", event.target.value)}>
+                <option value="">Select mobile banner</option>
+                {mobileBannerAssets.map((asset) => (
+                  <option key={asset.path} value={asset.path}>
+                    {asset.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {(bannerForm.desktopImageUrl || bannerForm.mobileImageUrl) ? (
+              <div className="admin-banner-preview-grid">
+                {bannerForm.desktopImageUrl ? (
+                  <div>
+                    <span>Desktop Preview</span>
+                    <img src={bannerForm.desktopImageUrl} alt="Desktop banner preview" />
+                  </div>
+                ) : null}
+                {bannerForm.mobileImageUrl ? (
+                  <div>
+                    <span>Mobile Preview</span>
+                    <img src={bannerForm.mobileImageUrl} alt="Mobile banner preview" />
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <label>
               <span>Alt Text</span>
               <input value={bannerForm.altText} onChange={(event) => updateBannerField("altText", event.target.value)} />

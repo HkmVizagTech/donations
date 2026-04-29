@@ -2043,6 +2043,32 @@ img {
   margin-top: 14px;
 }
 
+.admin-banner-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-banner-preview-grid div {
+  display: grid;
+  gap: 7px;
+}
+
+.admin-banner-preview-grid span {
+  color: hsl(220 32% 24%);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.admin-banner-preview-grid img {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 8px;
+  background: hsl(40 100% 98%);
+}
+
 .admin-banner-item,
 .admin-campaign-row {
   display: grid;
@@ -2147,6 +2173,7 @@ img {
   }
 
   .admin-form-row,
+  .admin-banner-preview-grid,
   .admin-banner-item,
   .admin-campaign-row {
     grid-template-columns: 1fr;
