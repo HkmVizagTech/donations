@@ -55,9 +55,39 @@ function DonationCard({ title, amount, sevaId, variant, onDonate }) {
 export default function AkshayaTritiyaPage() {
   const [selectedSevaId, setSelectedSevaId] = useState(null);
   const [checkoutScrollRequest, setCheckoutScrollRequest] = useState(0);
+  const [heroSlides, setHeroSlides] = useState(sliderImages);
   const checkoutRef = useRef(null);
   const annadaanRef = useRef(null);
   const selectedDonation = selectedSevaId ? getDonationBySevaId(selectedSevaId) : null;
+
+  useEffect(() => {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
+    if (!backendUrl) {
+      return;
+    }
+
+    let isActive = true;
+
+    fetch(`${backendUrl}/api/banners`)
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (!isActive || !payload?.success || !payload.banners?.length) {
+          return;
+        }
+
+        setHeroSlides(payload.banners);
+      })
+      .catch(() => {
+        if (isActive) {
+          setHeroSlides(sliderImages);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedDonation || !checkoutRef.current) {
@@ -81,7 +111,7 @@ export default function AkshayaTritiyaPage() {
     <main className="exact-page" id="top">
       <section className="hero-slider">
         <div className="container-hero">
-          <BannerCarouselShell slides={sliderImages} />
+          <BannerCarouselShell slides={heroSlides} />
         </div>
       </section>
 

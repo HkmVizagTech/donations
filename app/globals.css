@@ -1709,7 +1709,10 @@ img {
 
 .admin-topbar-actions,
 .admin-filters,
-.admin-pagination {
+.admin-pagination,
+.admin-tabs,
+.admin-form-actions,
+.admin-row-actions {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1726,6 +1729,31 @@ img {
 .admin-dashboard-error {
   width: min(1340px, 100%);
   margin: 0 auto 18px;
+}
+
+.admin-tabs {
+  width: min(1340px, 100%);
+  margin: 0 auto 18px;
+  padding: 6px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 8px;
+  background: hsl(0 0% 100% / 0.74);
+}
+
+.admin-tabs button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: hsl(220 24% 34%);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-tabs button.active {
+  background: hsl(12 78% 44%);
+  color: white;
 }
 
 .admin-stats-grid,
@@ -1912,12 +1940,175 @@ img {
   white-space: nowrap;
 }
 
+.admin-management-grid {
+  display: grid;
+  grid-template-columns: 430px minmax(0, 1fr);
+  gap: 14px;
+  width: min(1340px, 100%);
+  margin: 0 auto;
+  align-items: start;
+}
+
+.admin-management-form {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-management-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.admin-management-form label span,
+.admin-inline-check span {
+  color: hsl(220 32% 24%);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.admin-management-form input,
+.admin-management-form select {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid hsl(34 32% 82%);
+  border-radius: 8px;
+  background: white;
+  color: hsl(220 50% 16%);
+  outline: none;
+}
+
+.admin-management-form input:focus,
+.admin-management-form select:focus {
+  border-color: hsl(18 84% 50%);
+  box-shadow: 0 0 0 4px hsl(18 84% 50% / 0.08);
+}
+
+.admin-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-inline-check {
+  display: inline-flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.admin-inline-check input {
+  width: auto;
+  min-height: 0;
+}
+
+.admin-form-actions {
+  margin-top: 4px;
+}
+
+.admin-form-actions button,
+.admin-row-actions button,
+.admin-generated-url button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: hsl(12 78% 44%);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-form-actions button.secondary,
+.admin-row-actions button {
+  background: hsl(220 18% 32%);
+}
+
+.admin-row-actions button.danger {
+  background: hsl(6 72% 42%);
+}
+
+.admin-banner-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.admin-banner-item,
+.admin-campaign-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid hsl(34 32% 88%);
+  border-radius: 8px;
+  background: hsl(40 100% 98%);
+}
+
+.admin-banner-item img {
+  width: 150px;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid hsl(34 32% 82%);
+}
+
+.admin-banner-item strong,
+.admin-campaign-row strong {
+  display: block;
+  color: hsl(220 42% 16%);
+}
+
+.admin-banner-item span,
+.admin-banner-item small,
+.admin-campaign-row span {
+  display: block;
+  margin-top: 4px;
+  color: hsl(220 18% 42%);
+}
+
+.admin-campaign-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.admin-campaign-row code,
+.admin-generated-url code {
+  display: block;
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: hsl(220 18% 94%);
+  color: hsl(220 42% 16%);
+  font-size: 0.82rem;
+}
+
+.admin-generated-url {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background: hsl(146 52% 94%);
+  border: 1px solid hsl(146 38% 78%);
+}
+
+.admin-generated-url span {
+  color: hsl(146 58% 28%);
+  font-weight: 800;
+}
+
 @media (max-width: 1100px) {
   .admin-stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-management-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1941,7 +2132,18 @@ img {
   .admin-topbar-actions a,
   .admin-topbar-actions button,
   .admin-filters input,
-  .admin-filters select {
+  .admin-filters select,
+  .admin-tabs button {
+    width: 100%;
+  }
+
+  .admin-form-row,
+  .admin-banner-item,
+  .admin-campaign-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-banner-item img {
     width: 100%;
   }
 }

@@ -45,6 +45,27 @@ function StatCard({ label, value, hint }) {
   );
 }
 
+const emptyBannerForm = {
+  title: "",
+  desktopImageUrl: "",
+  mobileImageUrl: "",
+  altText: "",
+  targetUrl: "#annadaan",
+  sortOrder: 0,
+  isActive: true
+};
+
+const emptyCampaignForm = {
+  name: "",
+  source: "meta",
+  medium: "paid_social",
+  campaign: "",
+  content: "",
+  term: "",
+  baseUrl: "https://iskconcharity.org",
+  landingPath: ""
+};
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [admin, setAdmin] = useState(null);
@@ -53,6 +74,13 @@ export default function AdminDashboard() {
   const [pagination, setPagination] = useState(null);
   const [topDonors, setTopDonors] = useState([]);
   const [utmStats, setUtmStats] = useState([]);
+  const [banners, setBanners] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
+  const [activeSection, setActiveSection] = useState("overview");
+  const [bannerForm, setBannerForm] = useState(emptyBannerForm);
+  const [editingBannerId, setEditingBannerId] = useState("");
+  const [campaignForm, setCampaignForm] = useState(emptyCampaignForm);
+  const [generatedUrl, setGeneratedUrl] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [page, setPage] = useState(1);
@@ -92,11 +120,13 @@ export default function AdminDashboard() {
           status,
           search
         });
-        const [statsPayload, transactionsPayload, donorsPayload, utmPayload] = await Promise.all([
+        const [statsPayload, transactionsPayload, donorsPayload, utmPayload, bannersPayload, campaignsPayload] = await Promise.all([
           adminRequest("/api/admin/dashboard/stats"),
           adminRequest(`/api/admin/transactions?${query.toString()}`),
           adminRequest("/api/admin/dashboard/top-donors?limit=5"),
-          adminRequest("/api/admin/utm-stats")
+          adminRequest("/api/admin/utm-stats"),
+          adminRequest("/api/admin/banners"),
+          adminRequest("/api/admin/campaigns")
         ]);
 
         if (!isActive) {
@@ -108,6 +138,8 @@ export default function AdminDashboard() {
         setPagination(transactionsPayload.pagination || null);
         setTopDonors(donorsPayload.donors || []);
         setUtmStats(utmPayload.stats || []);
+        setBanners(bannersPayload.banners || []);
+        setCampaigns(campaignsPayload.campaigns || []);
       } catch (err) {
         if (err.message?.toLowerCase().includes("authentication") || err.message?.toLowerCase().includes("token")) {
           clearAdminSession();
@@ -136,6 +168,102 @@ export default function AdminDashboard() {
   };
 
   const exportUrl = `${ADMIN_API_URL}/api/admin/transactions/export`;
+
+  const refreshManagementData = async () => {
+    const [bannersPayload, campaignsPayload, utmPayload] = await Promise.all([
+      adminRequest("/api/admin/banners"),
+      adminRequest("/api/admin/campaigns"),
+      adminRequest("/api/admin/utm-stats")
+    ]);
+
+    setBanners(bannersPayload.banners || []);
+    setCampaigns(campaignsPayload.campaigns || []);
+    setUtmStats(utmPayload.stats || []);
+  };
+
+  const updateBannerField = (field, value) => {
+    setBannerForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const saveBanner = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    try {
+      const path = editingBannerId ? `/api/admin/banners/${editingBannerId}` : "/api/admin/banners";
+      await adminRequest(path, {
+        method: editingBannerId ? "PUT" : "POST",
+        body: JSON.stringify({
+          ...bannerForm,
+          sortOrder: Number(bannerForm.sortOrder || 0),
+          isActive: Boolean(bannerForm.isActive)
+        })
+      });
+      setBannerForm(emptyBannerForm);
+      setEditingBannerId("");
+      await refreshManagementData();
+    } catch (err) {
+      setError(err.message || "Unable to save banner.");
+    }
+  };
+
+  const editBanner = (banner) => {
+    setEditingBannerId(banner._id);
+    setBannerForm({
+      title: banner.title || "",
+      desktopImageUrl: banner.desktopImageUrl || "",
+      mobileImageUrl: banner.mobileImageUrl || "",
+      altText: banner.altText || "",
+      targetUrl: banner.targetUrl || "#annadaan",
+      sortOrder: banner.sortOrder || 0,
+      isActive: banner.isActive !== false
+    });
+    setActiveSection("banners");
+  };
+
+  const deleteBanner = async (bannerId) => {
+    setError("");
+
+    try {
+      await adminRequest(`/api/admin/banners/${bannerId}`, { method: "DELETE" });
+      await refreshManagementData();
+    } catch (err) {
+      setError(err.message || "Unable to delete banner.");
+    }
+  };
+
+  const updateCampaignField = (field, value) => {
+    setCampaignForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const saveCampaign = async (event) => {
+    event.preventDefault();
+    setError("");
+    setGeneratedUrl("");
+
+    try {
+      const payload = await adminRequest("/api/admin/create-campaign", {
+        method: "POST",
+        body: JSON.stringify(campaignForm)
+      });
+      setGeneratedUrl(payload.campaign?.generatedUrl || "");
+      setCampaignForm(emptyCampaignForm);
+      await refreshManagementData();
+    } catch (err) {
+      setError(err.message || "Unable to create UTM campaign.");
+    }
+  };
+
+  const deleteCampaign = async (campaignId) => {
+    setError("");
+
+    try {
+      await adminRequest(`/api/admin/campaigns/${campaignId}`, { method: "DELETE" });
+      await refreshManagementData();
+    } catch (err) {
+      setError(err.message || "Unable to delete campaign.");
+    }
+  };
 
   return (
     <main className="admin-dashboard-page">
@@ -183,6 +311,25 @@ export default function AdminDashboard() {
 
       {error ? <p className="admin-dashboard-error">{error}</p> : null}
 
+      <nav className="admin-tabs" aria-label="Admin sections">
+        {[
+          ["overview", "Overview"],
+          ["banners", "Banners"],
+          ["utm", "UTM Builder"]
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            className={activeSection === value ? "active" : ""}
+            onClick={() => setActiveSection(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      {activeSection === "overview" ? (
+        <>
       <section className="admin-stats-grid" aria-busy={isLoading}>
         <StatCard
           label="Total Donations"
@@ -336,6 +483,188 @@ export default function AdminDashboard() {
           </section>
         </aside>
       </section>
+        </>
+      ) : null}
+
+      {activeSection === "banners" ? (
+        <section className="admin-management-grid">
+          <form className="admin-panel admin-management-form" onSubmit={saveBanner}>
+            <div className="admin-panel-header">
+              <div>
+                <h2>{editingBannerId ? "Edit Banner" : "Add Banner"}</h2>
+                <p>Use separate desktop and mobile image URLs. The first active banner appears first.</p>
+              </div>
+            </div>
+            <label>
+              <span>Banner Title</span>
+              <input value={bannerForm.title} onChange={(event) => updateBannerField("title", event.target.value)} />
+            </label>
+            <label>
+              <span>Desktop Image URL</span>
+              <input value={bannerForm.desktopImageUrl} onChange={(event) => updateBannerField("desktopImageUrl", event.target.value)} placeholder="/banners/nsj-annadan-web.jpeg" />
+            </label>
+            <label>
+              <span>Mobile Image URL</span>
+              <input value={bannerForm.mobileImageUrl} onChange={(event) => updateBannerField("mobileImageUrl", event.target.value)} placeholder="/banners/nsj-annadan-mobile.jpeg" />
+            </label>
+            <label>
+              <span>Alt Text</span>
+              <input value={bannerForm.altText} onChange={(event) => updateBannerField("altText", event.target.value)} />
+            </label>
+            <div className="admin-form-row">
+              <label>
+                <span>Click Target</span>
+                <select value={bannerForm.targetUrl} onChange={(event) => updateBannerField("targetUrl", event.target.value)}>
+                  <option value="#annadaan">Annadaan Section</option>
+                  <option value="#goseva">Gau Seva Section</option>
+                  <option value="/">Home</option>
+                  <option value="/akshaya-tritiya">Campaign Page</option>
+                </select>
+              </label>
+              <label>
+                <span>Sort Order</span>
+                <input type="number" value={bannerForm.sortOrder} onChange={(event) => updateBannerField("sortOrder", event.target.value)} />
+              </label>
+            </div>
+            <label className="admin-inline-check">
+              <input type="checkbox" checked={bannerForm.isActive} onChange={(event) => updateBannerField("isActive", event.target.checked)} />
+              <span>Active</span>
+            </label>
+            <div className="admin-form-actions">
+              <button type="submit">{editingBannerId ? "Update Banner" : "Add Banner"}</button>
+              {editingBannerId ? (
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => {
+                    setEditingBannerId("");
+                    setBannerForm(emptyBannerForm);
+                  }}
+                >
+                  Cancel
+                </button>
+              ) : null}
+            </div>
+          </form>
+
+          <section className="admin-panel">
+            <h2>Hero Banners</h2>
+            <div className="admin-banner-list">
+              {banners.map((banner) => (
+                <article key={banner._id} className="admin-banner-item">
+                  <img src={banner.desktopImageUrl} alt={banner.altText} />
+                  <div>
+                    <strong>{banner.title}</strong>
+                    <span>{banner.isActive ? "Active" : "Inactive"} · Order {banner.sortOrder || 0}</span>
+                    <small>{banner.targetUrl}</small>
+                  </div>
+                  <div className="admin-row-actions">
+                    <button type="button" onClick={() => editBanner(banner)}>Edit</button>
+                    <button type="button" className="danger" onClick={() => deleteBanner(banner._id)}>Delete</button>
+                  </div>
+                </article>
+              ))}
+              {!banners.length ? <p>No dynamic banners yet. The site will use the fallback banners.</p> : null}
+            </div>
+          </section>
+        </section>
+      ) : null}
+
+      {activeSection === "utm" ? (
+        <section className="admin-management-grid">
+          <form className="admin-panel admin-management-form" onSubmit={saveCampaign}>
+            <div className="admin-panel-header">
+              <div>
+                <h2>Advanced UTM Creator</h2>
+                <p>Create clean campaign links for Meta, Google, WhatsApp, email, and organic posts.</p>
+              </div>
+            </div>
+            <label>
+              <span>Campaign Display Name</span>
+              <input value={campaignForm.name} onChange={(event) => updateCampaignField("name", event.target.value)} placeholder="Narasimha Jayanthi Meta Donations" />
+            </label>
+            <div className="admin-form-row">
+              <label>
+                <span>Source</span>
+                <select value={campaignForm.source} onChange={(event) => updateCampaignField("source", event.target.value)}>
+                  <option value="meta">Meta</option>
+                  <option value="google">Google</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="email">Email</option>
+                </select>
+              </label>
+              <label>
+                <span>Medium</span>
+                <select value={campaignForm.medium} onChange={(event) => updateCampaignField("medium", event.target.value)}>
+                  <option value="paid_social">Paid Social</option>
+                  <option value="cpc">CPC</option>
+                  <option value="organic_social">Organic Social</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="email">Email</option>
+                  <option value="referral">Referral</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              <span>Campaign Key</span>
+              <input value={campaignForm.campaign} onChange={(event) => updateCampaignField("campaign", event.target.value)} placeholder="narasimha_jayanthi_annadaan" />
+            </label>
+            <div className="admin-form-row">
+              <label>
+                <span>Ad Content</span>
+                <input value={campaignForm.content} onChange={(event) => updateCampaignField("content", event.target.value)} placeholder="image_501_card" />
+              </label>
+              <label>
+                <span>Term / Audience</span>
+                <input value={campaignForm.term} onChange={(event) => updateCampaignField("term", event.target.value)} placeholder="broad_ap_telugu" />
+              </label>
+            </div>
+            <div className="admin-form-row">
+              <label>
+                <span>Base URL</span>
+                <input value={campaignForm.baseUrl} onChange={(event) => updateCampaignField("baseUrl", event.target.value)} />
+              </label>
+              <label>
+                <span>Landing Path</span>
+                <select value={campaignForm.landingPath} onChange={(event) => updateCampaignField("landingPath", event.target.value)}>
+                  <option value="">Home</option>
+                  <option value="/akshaya-tritiya">Akshaya Tritiya</option>
+                </select>
+              </label>
+            </div>
+            <button type="submit">Create UTM Link</button>
+            {generatedUrl ? (
+              <div className="admin-generated-url">
+                <span>Generated URL</span>
+                <code>{generatedUrl}</code>
+                <button type="button" onClick={() => navigator.clipboard?.writeText(generatedUrl)}>Copy</button>
+              </div>
+            ) : null}
+          </form>
+
+          <section className="admin-panel">
+            <h2>Saved UTM Campaigns</h2>
+            <div className="admin-list">
+              {campaigns.map((campaign) => (
+                <div key={campaign._id} className="admin-campaign-row">
+                  <div>
+                    <strong>{campaign.name}</strong>
+                    <span>{campaign.utm?.source} / {campaign.utm?.medium} / {campaign.utm?.campaign}</span>
+                    <code>{campaign.generatedUrl}</code>
+                  </div>
+                  <div className="admin-row-actions">
+                    <button type="button" onClick={() => navigator.clipboard?.writeText(campaign.generatedUrl)}>Copy</button>
+                    <button type="button" className="danger" onClick={() => deleteCampaign(campaign._id)}>Delete</button>
+                  </div>
+                </div>
+              ))}
+              {!campaigns.length ? <p>No UTM campaigns created yet.</p> : null}
+            </div>
+          </section>
+        </section>
+      ) : null}
     </main>
   );
 }
