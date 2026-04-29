@@ -322,8 +322,29 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         theme: {
           color: "#d86d24"
         },
-        handler(response) {
+        async handler(response) {
           const paymentId = response.razorpay_payment_id || response.razorpay_subscription_id;
+
+          try {
+            const verificationResponse = await fetch(`${BACKEND_API_URL}/api/payment/verify-payment`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            });
+
+            if (!verificationResponse.ok) {
+              const verificationPayload = await verificationResponse.json().catch(() => null);
+              console.error("Payment verification failed:", verificationPayload || verificationResponse.status);
+            }
+          } catch (verificationError) {
+            console.error("Payment verification request failed:", verificationError);
+          }
 
           trackMetaEvent(
             "Purchase",
