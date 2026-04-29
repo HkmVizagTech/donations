@@ -53,9 +53,11 @@ function DonationCard({ title, amount, sevaId, variant, onDonate }) {
 }
 
 export default function AkshayaTritiyaPage() {
-  const [selectedDonation, setSelectedDonation] = useState(null);
+  const [selectedSevaId, setSelectedSevaId] = useState(null);
+  const [checkoutScrollRequest, setCheckoutScrollRequest] = useState(0);
   const checkoutRef = useRef(null);
   const annadaanRef = useRef(null);
+  const selectedDonation = selectedSevaId ? getDonationBySevaId(selectedSevaId) : null;
 
   useEffect(() => {
     if (!selectedDonation || !checkoutRef.current) {
@@ -68,10 +70,11 @@ export default function AkshayaTritiyaPage() {
         block: "start"
       });
     });
-  }, [selectedDonation]);
+  }, [selectedDonation, checkoutScrollRequest]);
 
   const handleDonate = (sevaId) => {
-    setSelectedDonation(getDonationBySevaId(sevaId));
+    setSelectedSevaId(sevaId);
+    setCheckoutScrollRequest((request) => request + 1);
   };
 
   return (
@@ -183,9 +186,10 @@ export default function AkshayaTritiyaPage() {
       {selectedDonation ? (
         <section ref={checkoutRef} className="embedded-checkout-wrap">
           <CheckoutPage
+            key={selectedSevaId}
             donation={selectedDonation}
             embedded
-            onClose={() => setSelectedDonation(null)}
+            onClose={() => setSelectedSevaId(null)}
           />
         </section>
       ) : null}
