@@ -269,8 +269,8 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
           mobile: mobile.trim(),
           dob,
           Akshaya_tritiya: true,
-          type: donation.title,
-          sevaName: donation.title,
+          type: donation.sectionTitle,
+          sevaName: donation.sectionTitle,
           occasion: donation.sectionTitle,
           sevaDate: new Date().toISOString().slice(0, 10),
           amount: finalAmount,
@@ -308,7 +308,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         amount: finalAmount * 100,
         currency: "INR",
         name: "Hare Krishna Movement Vizag",
-        description: `Donation for ${donation.title}`,
+        description: `Donation for ${donation.sectionTitle}`,
         order_id: orderData.orderId,
         prefill: {
           name: name.trim(),
@@ -317,7 +317,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         },
         notes: {
           donationId: orderData.donationId,
-          sevaType: donation.title
+          sevaType: donation.sectionTitle
         },
         theme: {
           color: "#d86d24"
@@ -340,7 +340,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
 
           router.push(
             `/thank-you?paymentId=${response.razorpay_payment_id}&amount=${finalAmount}&seva=${encodeURIComponent(
-              donation.title
+              donation.sectionTitle
             )}`
           );
         },
