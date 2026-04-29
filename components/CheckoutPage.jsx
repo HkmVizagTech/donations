@@ -165,13 +165,6 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
         currency: "INR",
         value: donation.numericAmount
       });
-      trackMetaEvent("InitiateCheckout", {
-        content_name: donation.title,
-        content_category: donation.sectionTitle,
-        content_type: "donation",
-        currency: "INR",
-        value: donation.numericAmount
-      });
       trackMetaCustomEvent("DonationCheckoutOpened", {
         content_name: donation.title,
         content_category: donation.sectionTitle,
@@ -206,8 +199,8 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
       return;
     }
 
-    if (!name.trim() || !mobile.trim() || !dob) {
-      setErrorMessage("Please enter donor name, mobile number, and date of birth.");
+    if (!name.trim() || !mobile.trim()) {
+      setErrorMessage("Please enter donor name and mobile number.");
       return;
     }
 
@@ -365,6 +358,13 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
       });
 
       rzp.open();
+      trackMetaEvent("InitiateCheckout", {
+        content_name: donation.title,
+        content_category: donation.sectionTitle,
+        content_type: "donation",
+        currency: "INR",
+        value: finalAmount
+      });
     } catch (error) {
       console.error("Payment error:", error);
       setErrorMessage(error.message || "Payment initialization failed. Please try again.");
@@ -429,8 +429,7 @@ export default function CheckoutPage({ donation, embedded = false, onClose }) {
                     setDobInputType("text");
                   }
                 }}
-                placeholder="Date of Birth"
-                required
+                placeholder="Date of Birth (Optional)"
               />
             </label>
 
