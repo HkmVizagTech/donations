@@ -45,6 +45,12 @@ function StatCard({ label, value, hint }) {
   );
 }
 
+function buildAddress(transaction) {
+  return [transaction.address, transaction.city, transaction.state, transaction.pincode]
+    .filter(Boolean)
+    .join(", ");
+}
+
 const emptyBannerForm = {
   title: "",
   desktopImageUrl: "",
@@ -409,10 +415,11 @@ export default function AdminDashboard() {
               <thead>
                 <tr>
                   <th>Donor</th>
-                  <th>Mobile</th>
+                  <th>Contact</th>
                   <th>Amount</th>
                   <th>Status</th>
-                  <th>UTM</th>
+                  <th>Seva</th>
+                  <th>Payment</th>
                   <th>Date</th>
                 </tr>
               </thead>
@@ -422,16 +429,33 @@ export default function AdminDashboard() {
                     <td>
                       <strong>{transaction.name || "-"}</strong>
                       <span>{transaction.email || transaction.id || "-"}</span>
+                      {transaction.dob ? <span>DOB: {transaction.dob}</span> : null}
                     </td>
-                    <td>{transaction.mobile || "-"}</td>
+                    <td>
+                      <strong>{transaction.mobile || "-"}</strong>
+                      {transaction.certificate ? <span>80G: {transaction.panNumber || "PAN pending"}</span> : null}
+                      {buildAddress(transaction) ? <span>{buildAddress(transaction)}</span> : null}
+                    </td>
                     <td>{currency.format(transaction.amount || 0)}</td>
                     <td>
                       <span className={`admin-status admin-status-${transaction.status || "created"}`}>
                         {transaction.status || "created"}
                       </span>
                     </td>
-                    <td>{transaction.utm?.campaign || transaction.utm?.source || "-"}</td>
-                    <td>{formatDate(transaction.date)}</td>
+                    <td>
+                      <strong>{transaction.sevaName || transaction.type || transaction.occasion || "-"}</strong>
+                      {transaction.sevaDate ? <span>Seva date: {transaction.sevaDate}</span> : null}
+                      {transaction.mahaprasadam ? <span>Mahaprasadam requested</span> : null}
+                    </td>
+                    <td>
+                      <strong>{transaction.razorpayPaymentId || "-"}</strong>
+                      <span>{transaction.razorpayOrderId || transaction.id || "-"}</span>
+                      <span>{transaction.utm?.campaign || transaction.utm?.source || "-"}</span>
+                    </td>
+                    <td>
+                      <strong>{formatDate(transaction.lastPaymentDate || transaction.date)}</strong>
+                      {transaction.receiptNumber ? <span>Receipt: {transaction.receiptNumber}</span> : null}
+                    </td>
                   </tr>
                 ))}
                 {!transactions.length && !isLoading ? (
