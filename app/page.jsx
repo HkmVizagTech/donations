@@ -1,5 +1,16 @@
 import AkshayaTritiyaPage from "@/components/AkshayaTritiyaPage";
+import { donationStructuredData } from "@/lib/seo";
 
 export default function HomePage() {
-  return <AkshayaTritiyaPage />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(donationStructuredData("/"))
+        }}
+      />
+      <AkshayaTritiyaPage />
+    </>
+  );
 }

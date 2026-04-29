@@ -3,25 +3,25 @@ export const sliderImages = [
     href: "#annadaan",
     src: "/banners/nsj-annadan-web.jpeg",
     mobileSrc: "/banners/nsj-annadan-mobile.jpeg",
-    alt: "Narasimha Jayanthi banner"
+    alt: "Narasimha Jayanthi Annadaan donation banner for ISKCON Charity Vizag"
   },
   {
     href: "#goseva",
     src: "/banners/gau-seva-desktop.png",
     mobileSrc: "/banners/gau-seva-mobile.png",
-    alt: "Gau Seva banner"
+    alt: "Gau Seva donation and cow protection banner"
   },
   {
     href: "#annadaan",
     src: "/banners/5-billion-meals-desktop.webp",
     mobileSrc: "/banners/5-billion-meals-mobile-final.jpeg",
-    alt: "5 Billion Meals banner"
+    alt: "Annadaan food donation campaign banner"
   },
   {
     href: "#goseva",
     src: "/banners/ekadashi-desktop.webp",
     mobileSrc: "/banners/ekadashi-mobile.webp",
-    alt: "Ekadashi banner"
+    alt: "Ekadashi Annadaan and Gau Seva donation banner"
   }
 ];
 
@@ -61,19 +61,19 @@ export const goSevaCards = [
 export const galleryImages = [
   {
     src: "/gallery/service-activity-1.png",
-    alt: "Eminent personalities supporting the cause"
+    alt: "Supporters of Hare Krishna Movement Vizag charity seva"
   },
   {
     src: "/gallery/service-activity-2.png",
-    alt: "Well-wishers and supporters standing with the mission"
+    alt: "Well-wishers supporting Annadaan and Gau Seva donations"
   },
   {
     src: "/gallery/service-activity-3.png",
-    alt: "Daily anna-daan service activity"
+    alt: "Daily Annadaan food distribution service in Visakhapatnam"
   },
   {
     src: "/gallery/service-activity-4.png",
-    alt: "Children receiving annadaan support"
+    alt: "Children receiving Annadaan meal support"
   }
 ];
 

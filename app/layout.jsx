@@ -1,5 +1,6 @@
 import { Poppins } from "next/font/google";
 import MetaPixel from "@/components/MetaPixel";
+import { absoluteUrl, seoConfig } from "@/lib/seo";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -9,13 +10,52 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://annadan.harekrishnavizag.org"),
+  metadataBase: new URL(seoConfig.siteUrl),
   title: {
-    default: "Annadan Donation | Gau Seva Donation | Hare Krishna Movement Vizag",
-    template: "%s | Hare Krishna Movement Vizag"
+    default: seoConfig.title,
+    template: "%s | ISKCON Charity Vizag"
   },
-  description:
-    "Support Annadan donation, Annadanam seva, Gau Seva donation, food donation and charitable seva initiatives from Hare Krishna Movement Vizag through a fast, mobile-friendly donation experience."
+  description: seoConfig.description,
+  keywords: seoConfig.keywords,
+  alternates: {
+    canonical: "/"
+  },
+  openGraph: {
+    title: seoConfig.title,
+    description: seoConfig.description,
+    url: seoConfig.siteUrl,
+    siteName: "ISKCON Charity Vizag",
+    locale: "en_IN",
+    type: "website",
+    images: [
+      {
+        url: seoConfig.image,
+        width: 1690,
+        height: 669,
+        alt: seoConfig.imageAlt
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: seoConfig.title,
+    description: seoConfig.description,
+    images: [seoConfig.image]
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1
+    }
+  },
+  icons: {
+    icon: absoluteUrl("/branding/iskcon-gambheeram-logo.png")
+  }
 };
 
 export default function RootLayout({ children }) {

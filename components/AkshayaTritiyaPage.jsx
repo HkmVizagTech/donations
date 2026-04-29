@@ -87,8 +87,8 @@ export default function AkshayaTritiyaPage() {
 
       <section className="headline-wrap container-narrow">
         <div className="headline-block">
-          <h1>Your open-hearted contribution will make a difference in</h1>
-          <h2>Lives of Hungry &amp; Needy People.</h2>
+          <h1>Donate Annadaan and Gau Seva Online</h1>
+          <h2>Support Narasimha Jayanthi meals for hungry and needy people.</h2>
         </div>
         <div className="headline-actions">
           <a href="#annadaan" className="cta-yellow">
@@ -111,7 +111,7 @@ export default function AkshayaTritiyaPage() {
 
       <section className="donation-section container-wide">
         <div className="headline-block thanks">
-          <h1>We are thankful for your kind gesture!</h1>
+          <h2>We are thankful for your kind gesture!</h2>
         </div>
 
         <div className="section-title-wrap" ref={annadaanRef}>

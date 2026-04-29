@@ -1,58 +1,34 @@
 import AkshayaTritiyaPage from "@/components/AkshayaTritiyaPage";
-
-const pageTitle =
-  "Donate Annadan, Annadanam and Gau Seva in Vizag";
-const pageDescription =
-  "Donate online for Annadan, Annadanam, Gau Seva, cow protection, festival seva and food donation through Hare Krishna Movement Vizag. Mobile-friendly donation page with fast checkout.";
+import { donationStructuredData, seoConfig } from "@/lib/seo";
 
 export const metadata = {
-  title: pageTitle,
-  description: pageDescription,
-  keywords: [
-    "donate",
-    "donation",
-    "annadan",
-    "annadan donation",
-    "annadanam",
-    "annadanam donation",
-    "food donation",
-    "gau seva",
-    "gau seva donation",
-    "go seva",
-    "cow donation",
-    "cow protection donation",
-    "charity donation",
-    "festival donation",
-    "narasimha jayanthi donation",
-    "ekadashi donation",
-    "hare krishna vizag donation",
-    "donate for needy",
-    "donate food online"
-  ],
+  title: "Donate Annadaan, Narasimha Jayanthi and Gau Seva Online",
+  description: seoConfig.description,
+  keywords: seoConfig.keywords,
   alternates: {
     canonical: "/akshaya-tritiya"
   },
   openGraph: {
-    title: pageTitle,
-    description: pageDescription,
-    url: "https://annadan.harekrishnavizag.org/akshaya-tritiya",
-    siteName: "Hare Krishna Movement Vizag",
+    title: "Donate Annadaan, Narasimha Jayanthi and Gau Seva Online",
+    description: seoConfig.description,
+    url: "/akshaya-tritiya",
+    siteName: "ISKCON Charity Vizag",
     locale: "en_IN",
     type: "website",
     images: [
       {
-        url: "/banners/nsj-annadan-web.jpeg",
+        url: seoConfig.image,
         width: 1690,
         height: 669,
-        alt: "Annadan and Gau Seva donation banner"
+        alt: seoConfig.imageAlt
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: pageTitle,
-    description: pageDescription,
-    images: ["/banners/nsj-annadan-web.jpeg"]
+    title: "Donate Annadaan, Narasimha Jayanthi and Gau Seva Online",
+    description: seoConfig.description,
+    images: [seoConfig.image]
   },
   robots: {
     index: true,
@@ -61,49 +37,13 @@ export const metadata = {
 };
 
 export default function AkshayaTritiyaRoute() {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "NGO",
-        name: "Hare Krishna Movement Vizag",
-        url: "https://annadan.harekrishnavizag.org/akshaya-tritiya",
-        logo: "https://annadan.harekrishnavizag.org/banners/nsj-annadan-web.jpeg",
-        email: "mukunda@hkmvizag.org",
-        telephone: "+91-8977761187",
-        areaServed: "India",
-        description: pageDescription,
-        sameAs: [
-          "https://www.facebook.com/hkm.vizag",
-          "https://www.instagram.com/harekrishnavizag/",
-          "https://www.youtube.com/user/harekrishnavizag"
-        ]
-      },
-      {
-        "@type": "WebPage",
-        name: pageTitle,
-        url: "https://annadan.harekrishnavizag.org/akshaya-tritiya",
-        description: pageDescription,
-        about: [
-          "Annadan donation",
-          "Annadanam",
-          "Gau Seva",
-          "Food donation",
-          "Cow protection donation"
-        ],
-        potentialAction: {
-          "@type": "DonateAction",
-          target: "https://annadan.harekrishnavizag.org/akshaya-tritiya"
-        }
-      }
-    ]
-  };
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(donationStructuredData("/akshaya-tritiya"))
+        }}
       />
       <AkshayaTritiyaPage />
     </>
