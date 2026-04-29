@@ -1677,7 +1677,8 @@ img {
 }
 
 .admin-error,
-.admin-dashboard-error {
+.admin-dashboard-error,
+.admin-dashboard-success {
   margin: 0;
   padding: 12px;
   border: 1px solid hsl(6 68% 78%);
@@ -1729,6 +1730,14 @@ img {
 .admin-dashboard-error {
   width: min(1340px, 100%);
   margin: 0 auto 18px;
+}
+
+.admin-dashboard-success {
+  width: min(1340px, 100%);
+  margin: 0 auto 18px;
+  border-color: hsl(146 38% 78%);
+  background: hsl(146 52% 94%);
+  color: hsl(146 58% 28%);
 }
 
 .admin-tabs {

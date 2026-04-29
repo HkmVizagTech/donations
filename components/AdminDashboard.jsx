@@ -81,6 +81,8 @@ export default function AdminDashboard() {
   const [editingBannerId, setEditingBannerId] = useState("");
   const [campaignForm, setCampaignForm] = useState(emptyCampaignForm);
   const [generatedUrl, setGeneratedUrl] = useState("");
+  const [reconcileSummary, setReconcileSummary] = useState(null);
+  const [isReconciling, setIsReconciling] = useState(false);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [page, setPage] = useState(1);
@@ -168,6 +170,24 @@ export default function AdminDashboard() {
   };
 
   const exportUrl = `${ADMIN_API_URL}/api/admin/transactions/export`;
+
+  const runPaymentReconciliation = async () => {
+    setIsReconciling(true);
+    setError("");
+
+    try {
+      const payload = await adminRequest("/api/admin/payments/reconcile-captured", {
+        method: "POST",
+        body: JSON.stringify({ limit: 100 })
+      });
+      setReconcileSummary(payload.summary);
+      setPage(1);
+    } catch (err) {
+      setError(err.message || "Unable to reconcile payments.");
+    } finally {
+      setIsReconciling(false);
+    }
+  };
 
   const refreshManagementData = async () => {
     const [bannersPayload, campaignsPayload, utmPayload] = await Promise.all([
@@ -303,6 +323,9 @@ export default function AdminDashboard() {
           >
             Export CSV
           </a>
+          <button type="button" onClick={runPaymentReconciliation} disabled={isReconciling}>
+            {isReconciling ? "Checking..." : "Verify Payments"}
+          </button>
           <button type="button" onClick={handleLogout}>
             Logout
           </button>
@@ -310,6 +333,13 @@ export default function AdminDashboard() {
       </header>
 
       {error ? <p className="admin-dashboard-error">{error}</p> : null}
+      {reconcileSummary ? (
+        <p className="admin-dashboard-success">
+          Payment check complete: scanned {reconcileSummary.scanned}, captured found{" "}
+          {reconcileSummary.capturedFound}, marked paid {reconcileSummary.reconciledToPaid},
+          WhatsApp sent {reconcileSummary.whatsappSent}.
+        </p>
+      ) : null}
 
       <nav className="admin-tabs" aria-label="Admin sections">
         {[
